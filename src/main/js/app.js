@@ -10,11 +10,18 @@ class App extends React.Component {
 	}
 
 	componentDidMount() { 
-        // May want to use different logic for REST calls
-        // TOOD: Change
-		client({method: 'GET', path: '/api/posts'}).done(response => {
-			this.setState({posts: response.entity._embedded.posts});
-		});
+		// client({method: 'GET', path: '/api/posts'}).done(response => {
+		// 	this.setState({posts: response.entity._embedded.posts});
+		// });
+		fetch("/api/posts")
+			.then((response) => {
+				if (!response.ok) throw Error(response.statusText);
+				return response.json();
+			})
+			.then((data) => {
+				this.setState({posts: data._embedded.posts});
+			})
+			.catch((error) => console.log(error));
 	}
 
 	render() { 
