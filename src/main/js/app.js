@@ -2,7 +2,7 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const client = require('./client');
 
-const follow = require('follow');
+const follow = require('./api/follow');
 
 const root = '/api';
 
@@ -10,7 +10,7 @@ class App extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {posts: [], pageSize: 1};
+		this.state = {posts: [], attributes: [],  pageSize: 2, links: {}};
 	}
 
 	loadFromServer(pageSize) {
@@ -27,7 +27,7 @@ class App extends React.Component {
 			});
 		}).done(postCollection => {
 			this.setState({
-				posts: postCollection.entity._embedded.employees,
+				posts: postCollection.entity._embedded.posts,
 				attributes: Object.keys(this.schema.properties),
 				pageSize: pageSize,
 				links: postCollection.entity._links});
@@ -65,18 +65,51 @@ class App extends React.Component {
 		});
 	}
 
+	updatePageSize(pageSize) {
+		if (pageSize !== this.state.pageSize) {
+			this.loadFromServer(pageSize);
+		}
+	}
+
+	onDelete(post) {
+		client({method: 'DELETE', path: post._links.self.href}).done(response =>
+		{
+			this.loadFromServer(this.state.pageSize);
+		});
+	}
+
 	componentDidMount() { 
 		this.loadFromServer(this.state.pageSize);
 	}
 
 	render() { 
 		return (
-			<PostList posts={this.state.posts}/>
+			<div>
+				<CreateDialog attributes={this.state.attributes} onCreate={this.onCreate}/>
+				<PostList posts={this.state.posts}
+						  links={this.state.links}
+						  pageSize={this.state.pageSize}
+						  onNavigate={this.onNavigate}
+						  onDelete={this.onDelete}
+						  updatePageSize={this.updatePageSize}
+				/>
+			</div>
 		)
 	}
 }
 
 class PostList extends React.Component{
+
+	handleInput(e) {
+		e.preventDefault();
+		const pageSize = ReactDOM.findDOMNode(this.refs.pageSize).value;
+		if (/^[0-9]+$/.test(pageSize)) {
+			this.props.updatePageSize(pageSize);
+		} else {
+			ReactDOM.findDOMNode(this.refs.pageSize).value =
+				pageSize.substring(0, pageSize.length - 1);
+		}
+	}
 
 	handleNavFirst(e){
 		e.preventDefault();
@@ -123,8 +156,8 @@ class PostList extends React.Component{
 				<table>
 					<tbody>
 						<tr>
-							<th>First Name</th>
-							<th>Last Name</th>
+							<th>Name</th>
+							<th>Rating</th>
 							<th>Description</th>
 							<th></th>
 						</tr>
@@ -140,12 +173,21 @@ class PostList extends React.Component{
 }
 
 class Post extends React.Component{
+	constructor(props) {
+		super(props);
+		this.handleDelete = this.handleDelete.bind(this);
+	}
+
+	handleDelete() {
+		this.props.onDelete(this.props.post);
+	}
 	render() {
 		return (
 			<tr>
 				<td>{this.props.post.name}</td>
 				<td>{this.props.post.rating}</td>
 				<td>{this.props.post.description}</td>
+				<button>{this.handleDelete}Delete</button>
 			</tr>
 		)
 	}
