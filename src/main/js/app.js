@@ -11,6 +11,10 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {posts: [], attributes: [],  pageSize: 2, links: {}};
+		this.updatePageSize = this.updatePageSize.bind(this);
+		this.onCreate = this.onCreate.bind(this);
+		this.onDelete = this.onDelete.bind(this);
+		this.onNavigate = this.onNavigate.bind(this);
 	}
 
 	loadFromServer(pageSize) {
@@ -60,7 +64,7 @@ class App extends React.Component {
 				posts: postCollection.entity._embedded.posts,
 				attributes: this.state.attributes,
 				pageSize: this.state.pageSize,
-				links: postCollection.entity._embedded.links
+				links: postCollection.entity._links
 			});
 		});
 	}
@@ -98,14 +102,81 @@ class App extends React.Component {
 	}
 }
 
+class CreateDialog extends React.Component {
+
+	constructor(props) {
+		super(props);
+		this.myRef = React.createRef();
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	handleSubmit(e) {
+		e.preventDefault();
+		const newPost = {};
+		this.props.attributes.forEach(attribute => {
+			newPost[attribute] = ReactDOM.findDOMNode(this.refs[attribute]).value.trim();
+		});
+		this.props.onCreate(newPost);
+
+		// clear out the dialog's inputs
+		this.props.attributes.forEach(attribute => {
+			ReactDOM.findDOMNode(this.refs[attribute]).value = '';
+		});
+
+		// Navigate away from the dialog to hide it.
+		window.location = "#";
+	}
+
+	render() {
+		const inputs = this.props.attributes.map(attribute =>
+			<p key={attribute}>
+				<input type="text" placeholder={attribute} ref={attribute} className="field"/>
+			</p>
+		);
+
+		return (
+			<div>
+				<a href="#createPost">Create</a>
+
+				<div id="createPost" className="modalDialog">
+					<div>
+						<a href="#" title="Close" className="close">X</a>
+
+						<h2>Create new post</h2>
+
+						<form>
+							{inputs}
+							<button onClick={this.handleSubmit}>Create</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		)
+	}
+
+}
+
 class PostList extends React.Component{
+
+	constructor(props) {
+		super(props);
+		this.myRef = React.createRef();
+		this.handleNavFirst = this.handleNavFirst.bind(this);
+		this.handleNavPrev = this.handleNavPrev.bind(this);
+		this.handleNavNext = this.handleNavNext.bind(this);
+		this.handleNavLast = this.handleNavLast.bind(this);
+		this.handleInput = this.handleInput.bind(this);
+	}
 
 	handleInput(e) {
 		e.preventDefault();
+		// const pageSize = ReactDOM.findDOMNode(this.myRef.pageSize).value;
 		const pageSize = ReactDOM.findDOMNode(this.refs.pageSize).value;
 		if (/^[0-9]+$/.test(pageSize)) {
 			this.props.updatePageSize(pageSize);
 		} else {
+			// ReactDOM.findDOMNode(this.myRef.pageSize).value =
+			// 	pageSize.substring(0, pageSize.length - 1);
 			ReactDOM.findDOMNode(this.refs.pageSize).value =
 				pageSize.substring(0, pageSize.length - 1);
 		}
@@ -137,6 +208,7 @@ class PostList extends React.Component{
 		);
 	
 		const navLinks = [];
+
 		if ("first" in this.props.links) {
 			navLinks.push(<button key="first" onClick={this.handleNavFirst}>&lt;&lt;</button>);
 		}
@@ -187,65 +259,14 @@ class Post extends React.Component{
 				<td>{this.props.post.name}</td>
 				<td>{this.props.post.rating}</td>
 				<td>{this.props.post.description}</td>
-				<button>{this.handleDelete}Delete</button>
+				<button onClick={this.handleDelete}>Delete</button>
 			</tr>
 		)
 	}
 }
 
 
-class CreateDialog extends React.Component {
 
-	constructor(props) {
-		super(props);
-		this.handleSubmit = this.handleSubmit.bind(this);
-	}
-
-	handleSubmit(e) {
-		e.preventDefault();
-		const newPost = {};
-		this.props.attributes.forEach(attribute => {
-			newPost[attribute] = ReactDOM.findDOMNode(this.refs[attribute]).value.trim();
-		});
-		this.props.onCreate(newPost);
-
-		// clear out the dialog's inputs
-		this.props.attributes.forEach(attribute => {
-			ReactDOM.findDOMNode(this.refs[attribute]).value = '';
-		});
-
-		// Navigate away from the dialog to hide it.
-		window.location = "#";
-	}
-
-	render() {
-		const inputs = this.props.attributes.map(attribute =>
-			<p key={attribute}>
-				<input type="text" placeholder={attribute} ref={attribute} className="field"/>
-			</p>
-		);
-
-		return (
-			<div>
-				<a href="#createPost">Create</a>
-
-				<div id="createPost" className="modalDialog">
-					<div>
-						<a href="#" title="Close" className="close">X</a>
-
-						<h2>Create new post</h2>
-
-						<form>
-							{inputs}
-							<button onClick={this.handleSubmit}>Create</button>
-						</form>
-					</div>
-				</div>
-			</div>
-		)
-	}
-
-}
 
 ReactDOM.render(
     <App />,

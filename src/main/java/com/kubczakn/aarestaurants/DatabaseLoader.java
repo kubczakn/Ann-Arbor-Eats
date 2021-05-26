@@ -22,5 +22,7 @@ public class DatabaseLoader implements CommandLineRunner {
         this.repository
             .save(new Post("Sava's", 5, "A spirited dining " + "institution for every occasion!"));
         this.repository.save(new Post("Palio", 4, "Authentic Italian"));
+        this.repository.save(new Post("Palio", 3, "Authentic Italian"));
+        this.repository.save(new Post("Palio", 2, "Authentic Italian"));
     }
 }
