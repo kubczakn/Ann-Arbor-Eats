@@ -1,5 +1,6 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
+const when = require('when');
 const client = require('./client');
 
 const follow = require('./api/follow');
@@ -14,6 +15,7 @@ class App extends React.Component {
 		this.updatePageSize = this.updatePageSize.bind(this);
 		this.onCreate = this.onCreate.bind(this);
 		this.onDelete = this.onDelete.bind(this);
+		this.onUpdate = this.onUpdate.bind(this);
 		this.onNavigate = this.onNavigate.bind(this);
 	}
 
@@ -27,14 +29,25 @@ class App extends React.Component {
 				headers: {'Accept': 'application/schema+json'}
 			}).then(schema => {
 				this.schema = schema.entity;
+				this.links = postCollection.entity._links;
 				return postCollection;
 			});
-		}).done(postCollection => {
+		}).then(postCollection => {
+			return postCollection.entity._embedded.posts.map(post =>
+				client({
+					method: 'GET',
+					path: post._links.self.href
+				})
+			);
+		}).then(postPromises => {
+			return when.all(postPromises);
+		}).done(posts => {
 			this.setState({
-				posts: postCollection.entity._embedded.posts,
+				posts: posts,
 				attributes: Object.keys(this.schema.properties),
 				pageSize: pageSize,
-				links: postCollection.entity._links});
+				links: this.links
+			});
 		});
 	}
 
@@ -58,13 +71,46 @@ class App extends React.Component {
 		});
 	}
 
+	onUpdate(post, updatedPost) {
+		client({
+			method: 'PUT',
+			path: post.entity._links.self.href,
+			entity: updatedPost,
+			headers: {
+				'Content-Type': 'application/json',
+				'If-Match': post.headers.Etag
+			}
+		}).done(response => {
+			this.loadFromServer(this.state.pageSize);
+		}, response => {
+			if (response.status.code === 412) {
+				alert('DENIED: Unable to update ' +
+					post.entity._links.self.href + '. Your copy is stale.');
+			}
+		});
+	}
+
 	onNavigate(navUri) {
-		client({method: 'GET', path: navUri}).done(postCollection => {
+		client({
+			method: 'GET',
+			path: navUri
+		}).then(postCollection => {
+			this.links = postCollection.entity._links;
+
+			return postCollection.entity._embedded.posts.map(post =>
+				client({
+					method: 'GET',
+					path: post._links.self.href
+				})
+			);
+		}).then(postPromises=> {
+			return when.all(postPromises);
+		}).done(posts => {
 			this.setState({
-				posts: postCollection.entity._embedded.posts,
-				attributes: this.state.attributes,
+				posts: posts,
+				attributes: Object.keys(this.schema.properties),
 				pageSize: this.state.pageSize,
-				links: postCollection.entity._links
+				links: this.links
 			});
 		});
 	}
@@ -76,7 +122,7 @@ class App extends React.Component {
 	}
 
 	onDelete(post) {
-		client({method: 'DELETE', path: post._links.self.href}).done(response =>
+		client({method: 'DELETE', path: post.entity._links.self.href}).done(response =>
 		{
 			this.loadFromServer(this.state.pageSize);
 		});
@@ -93,12 +139,58 @@ class App extends React.Component {
 				<PostList posts={this.state.posts}
 						  links={this.state.links}
 						  pageSize={this.state.pageSize}
+						  attributes={this.state.attributes}
 						  onNavigate={this.onNavigate}
 						  onDelete={this.onDelete}
+                          onUpdate={this.onUpdate}
 						  updatePageSize={this.updatePageSize}
 				/>
 			</div>
 		)
+	}
+}
+
+class UpdateDialog extends React.Component {
+	constructor(props) {
+		super(props);
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	handleSubmit(e) {
+		e.preventDefault();
+		const updatedPost = {};
+		this.props.attributes.forEach(attribute => {
+			updatedPost[attribute] =
+				ReactDOM.findDOMNode(this.refs[attribute]).value.trim();
+		});
+		this.props.onUpdate(this.props.post, updatedPost);
+		window.location = '#';
+	}
+
+	render() {
+		const inputs = this.props.attributes.map(attribute =>
+			<p key={this.props.post.entity[attribute]}>
+				<input type="text" placeholder={attribute}
+					   defaultValue={this.props.post.entity[attribute]}
+					   ref={attribute} className="field"/>
+			</p>
+		);
+		const dialogId = "updatePost-" + this.props.post.entity._links.self.href;
+		return (
+			<div key={this.props.post.entity._links.self.href}>
+				<a href={"#" + dialogId}>Update</a>
+                <div id={dialogId} className="modalDialog">
+					<div>
+						<a href="#" title={"Close"} className={"close"}>X</a>
+						<h2>Update a post</h2>
+						<form>
+							{inputs}
+							<button onClick={this.handleSubmit}>Update</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		);
 	}
 }
 
@@ -204,7 +296,7 @@ class PostList extends React.Component{
 
 	render() {
 		const posts = this.props.posts.map(post =>
-			<Post key={post._links.self.href} post={post} onDelete={this.props.onDelete}/>
+			<Post key={post.entity._links.self.href} post={post} attributes={this.props.attributes} onUpdate={this.props.onUpdate} onDelete={this.props.onDelete}/>
 		);
 	
 		const navLinks = [];
@@ -256,10 +348,16 @@ class Post extends React.Component{
 	render() {
 		return (
 			<tr>
-				<td>{this.props.post.name}</td>
-				<td>{this.props.post.rating}</td>
-				<td>{this.props.post.description}</td>
-				<button onClick={this.handleDelete}>Delete</button>
+				<td>{this.props.post.entity.name}</td>
+				<td>{this.props.post.entity.rating}</td>
+				<td>{this.props.post.entity.description}</td>
+				<td>
+					<UpdateDialog post={this.props.post} attributes={this.props.attributes}
+								  onUpdate={this.props.onUpdate}/>
+				</td>
+               	<td>
+					<button onClick={this.handleDelete}>Delete</button>
+				</td>
 			</tr>
 		)
 	}

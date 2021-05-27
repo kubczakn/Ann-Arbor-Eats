@@ -1,11 +1,13 @@
 package com.kubczakn.aarestaurants.posts;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-
+import javax.persistence.Version;
 
 @Entity
 public class Post {
@@ -13,6 +15,9 @@ public class Post {
     private String name;
     private int rating;
     private String description;
+
+    // Used to support versioning of resources
+    private @Version @JsonIgnore Long version;
 
     private Post() {}
 
@@ -30,7 +35,8 @@ public class Post {
 		return Objects.equals(id, post.id) &&
 			Objects.equals(name, post.name) &&
 			Objects.equals(rating, post.rating) &&
-			Objects.equals(description, post.description);
+			Objects.equals(description, post.description) &&
+            Objects.equals(version, post.version);
 	}
 
     public Long getId() {
@@ -52,4 +58,8 @@ public class Post {
     public String getDescription() {
         return description;
     }
+
+    public Long getVersion() { return version; }
+
+    public void setVersion(Long version) { this.version = version; }
 }
