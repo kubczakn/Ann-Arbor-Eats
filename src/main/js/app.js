@@ -1,22 +1,28 @@
+'use strict';
+
 const React = require('react');
 const ReactDOM = require('react-dom');
 const when = require('when');
 const client = require('./client');
 
+// allows hopping to multiple links
 const follow = require('./api/follow');
 
 const root = '/api';
+const stompClient = require('./websocket-listener')
 
 class App extends React.Component { 
 
 	constructor(props) {
 		super(props);
-		this.state = {posts: [], attributes: [],  pageSize: 2, links: {}};
+		this.state = {posts: [], attributes: [], page: 1,  pageSize: 2, links: {}};
 		this.updatePageSize = this.updatePageSize.bind(this);
 		this.onCreate = this.onCreate.bind(this);
 		this.onDelete = this.onDelete.bind(this);
 		this.onUpdate = this.onUpdate.bind(this);
 		this.onNavigate = this.onNavigate.bind(this);
+		this.refreshCurrentPage = this.refreshCurrentPage.bind(this);
+		this.refreshAndGoToLastPage = this.refreshAndGoToLastPage.bind(this);
 	}
 
 	loadFromServer(pageSize) {
@@ -43,6 +49,7 @@ class App extends React.Component {
 			return when.all(postPromises);
 		}).done(posts => {
 			this.setState({
+				page: this.page,
 				posts: posts,
 				attributes: Object.keys(this.schema.properties),
 				pageSize: pageSize,
@@ -52,23 +59,14 @@ class App extends React.Component {
 	}
 
 	onCreate(newPost) {
-		follow(client, root, ['posts']).then(postCollection => {
-			return client({
+		follow(client, root, ['posts']).done(response => {
+			client({
 				method: 'POST',
-				path: postCollection.entity._links.self.href,
+				path: response.entity._links.self.href,
 				entity: newPost,
 				headers: {'Content-Type': 'application/json'}
 			})
-		}).then(response => {
-			return follow(client, root, [
-				{rel: 'posts', params: {'size': this.state.pageSize}}]);
-		}).done(response => {
-			if (typeof response.entity._links.last !== "undefined") {
-				this.onNavigate(response.entity._links.last.href);
-			} else {
-				this.onNavigate(response.entity._links.self.href);
-			}
-		});
+		})
 	}
 
 	onUpdate(post, updatedPost) {
@@ -81,7 +79,7 @@ class App extends React.Component {
 				'If-Match': post.headers.Etag
 			}
 		}).done(response => {
-			this.loadFromServer(this.state.pageSize);
+		    // Let websocket handler update the state
 		}, response => {
 			if (response.status.code === 412) {
 				alert('DENIED: Unable to update ' +
@@ -96,6 +94,7 @@ class App extends React.Component {
 			path: navUri
 		}).then(postCollection => {
 			this.links = postCollection.entity._links;
+			this.page = postCollection.entity.page;
 
 			return postCollection.entity._embedded.posts.map(post =>
 				client({
@@ -107,6 +106,7 @@ class App extends React.Component {
 			return when.all(postPromises);
 		}).done(posts => {
 			this.setState({
+				page: this.page,
 				posts: posts,
 				attributes: Object.keys(this.schema.properties),
 				pageSize: this.state.pageSize,
@@ -128,8 +128,57 @@ class App extends React.Component {
 		});
 	}
 
+	refreshAndGoToLastPage(message) {
+		follow(client, root, [{
+			rel: 'posts',
+			params: {size: this.state.pageSize}
+		}]).done(response => {
+			if (response.entity._links.last !== undefined) {
+				this.onNavigate(response.entity._links.last.href);
+			} else {
+				this.onNavigate(response.entity._links.self.href);
+			}
+		})
+	}
+
+	refreshCurrentPage(message) {
+		follow(client, root, [{
+			rel: 'posts',
+			params: {
+				size: this.state.pageSize,
+				page: this.state.page.number
+			}
+		}]).then(postCollection => {
+			this.links = postCollection.entity._links;
+			this.page = postCollection.entity.page;
+
+			return postCollection.entity._embedded.posts.map(post => {
+				return client({
+					method: 'GET',
+					path: post._links.self.href
+				})
+			});
+		}).then(postPromises => {
+			return when.all(postPromises);
+		}).then(posts => {
+			this.setState({
+				page: this.page,
+				posts: posts,
+				attributes: Object.keys(this.schema.properties),
+				pageSize: this.state.pageSize,
+				links: this.links
+			});
+		});
+	}
+
 	componentDidMount() { 
 		this.loadFromServer(this.state.pageSize);
+		// Register for WebSocket events
+		stompClient.register([
+			{route: '/topic/newPost', callback: this.refreshAndGoToLastPage},
+			{route: '/topic/updatePost', callback: this.refreshCurrentPage},
+			{route: '/topic/deletePost', callback: this.refreshCurrentPage}
+		]);
 	}
 
 	render() { 
