@@ -15,7 +15,8 @@ class App extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {posts: [], attributes: [], page: 1,  pageSize: 2, links: {}};
+		this.state = {posts: [], attributes: [], page: 1,  pageSize: 2, links: {},
+		loggedInReviewer: this.props.loggedInReviewer};
 		this.updatePageSize = this.updatePageSize.bind(this);
 		this.onCreate = this.onCreate.bind(this);
 		this.onDelete = this.onDelete.bind(this);
@@ -34,6 +35,19 @@ class App extends React.Component {
 				path: postCollection.entity._links.profile.href,
 				headers: {'Accept': 'application/schema+json'}
 			}).then(schema => {
+				/**
+				 * Filter unneeded JSON Schema properties, like uri references and
+				 * subtypes ($ref).
+				 */
+				Object.keys(schema.entity.properties).forEach(function (property) {
+					if (schema.entity.properties[property].hasOwnProperty('format') &&
+						schema.entity.properties[property].format === 'uri') {
+						delete schema.entity.properties[property];
+					}
+					else if (schema.entity.properties[property].hasOwnProperty('$ref')) {
+						delete schema.entity.properties[property];
+					}
+				});
 				this.schema = schema.entity;
 				this.links = postCollection.entity._links;
 				return postCollection;
@@ -81,9 +95,16 @@ class App extends React.Component {
 		}).done(response => {
 		    // Let websocket handler update the state
 		}, response => {
+			if (response.status.code === 403) {
+				alert('ACCESS DENIED: You are not authorized to update ' +
+					post.entity._links.self.href);
+			}
 			if (response.status.code === 412) {
 				alert('DENIED: Unable to update ' +
 					post.entity._links.self.href + '. Your copy is stale.');
+			}
+			else {
+				alert("You are not authorized to update")
 			}
 		});
 	}
@@ -123,9 +144,13 @@ class App extends React.Component {
 
 	onDelete(post) {
 		client({method: 'DELETE', path: post.entity._links.self.href}).done(response =>
-		{
-			this.loadFromServer(this.state.pageSize);
-		});
+		{/* Let websocket handle UI update on delete */},
+		    response => {
+		    	if (response.status.code === 403) {
+		    		alert('ACCESS DENIED: You are not authorized to delete' +
+					post.entity._links.self.href);
+				}
+			});
 	}
 
 	refreshAndGoToLastPage(message) {
@@ -146,7 +171,8 @@ class App extends React.Component {
 			rel: 'posts',
 			params: {
 				size: this.state.pageSize,
-				page: this.state.page.number
+				// page: this.state.page.number
+				page: this.state.page
 			}
 		}]).then(postCollection => {
 			this.links = postCollection.entity._links;
@@ -193,6 +219,7 @@ class App extends React.Component {
 						  onDelete={this.onDelete}
                           onUpdate={this.onUpdate}
 						  updatePageSize={this.updatePageSize}
+						  loggedInReviewer={this.state.loggedInReviewer}
 				/>
 			</div>
 		)
@@ -225,21 +252,30 @@ class UpdateDialog extends React.Component {
 			</p>
 		);
 		const dialogId = "updatePost-" + this.props.post.entity._links.self.href;
-		return (
-			<div key={this.props.post.entity._links.self.href}>
-				<a href={"#" + dialogId}>Update</a>
-                <div id={dialogId} className="modalDialog">
-					<div>
-						<a href="#" title={"Close"} className={"close"}>X</a>
-						<h2>Update a post</h2>
-						<form>
-							{inputs}
-							<button onClick={this.handleSubmit}>Update</button>
-						</form>
+		const isReviewer = this.props.post.entity.reviewer.name === this.props.loggedInReviewer;
+		if (isReviewer){
+			return ( 	<div key={this.props.post.entity._links.self.href}>
+							<a href={"#" + dialogId}>Update</a>
+							<div id={dialogId} className="modalDialog">
+								<div>
+									<a href="#" title={"Close"} className={"close"}>X</a>
+									<h2>Update a post</h2>
+									<form>
+										{inputs}
+										<button onClick={this.handleSubmit}>Update</button>
+									</form>
+								</div>
+							</div>
+						</div>
+			);
+		}
+		else {
+			return  ( <div>
+						<a>Denied</a>
 					</div>
-				</div>
-			</div>
-		);
+			);
+		}
+
 	}
 }
 
@@ -345,7 +381,9 @@ class PostList extends React.Component{
 
 	render() {
 		const posts = this.props.posts.map(post =>
-			<Post key={post.entity._links.self.href} post={post} attributes={this.props.attributes} onUpdate={this.props.onUpdate} onDelete={this.props.onDelete}/>
+			<Post key={post.entity._links.self.href} post={post} attributes={this.props.attributes} onUpdate={this.props.onUpdate} onDelete={this.props.onDelete}
+				loggedInReviewer = {this.props.loggedInReviewer}
+			/>
 		);
 	
 		const navLinks = [];
@@ -400,9 +438,10 @@ class Post extends React.Component{
 				<td>{this.props.post.entity.name}</td>
 				<td>{this.props.post.entity.rating}</td>
 				<td>{this.props.post.entity.description}</td>
+				<td>{this.props.post.entity.reviewer.name}</td>
 				<td>
 					<UpdateDialog post={this.props.post} attributes={this.props.attributes}
-								  onUpdate={this.props.onUpdate}/>
+								  onUpdate={this.props.onUpdate} loggedInReviewer={this.props.loggedInReviewer}/>
 				</td>
                	<td>
 					<button onClick={this.handleDelete}>Delete</button>
@@ -416,6 +455,6 @@ class Post extends React.Component{
 
 
 ReactDOM.render(
-    <App />,
+    <App loggedInReviewer={document.getElementById('reviewername').innerHTML} />,
     document.getElementById('react')
 )
