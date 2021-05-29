@@ -1,23 +1,25 @@
 package com.kubczakn.aarestaurants.posts;
 
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class PostController {
     @Autowired
     private PostRepository postRepository;
 
-    @GetMapping("/get")
+    @GetMapping("/posts/get")
     Iterable<Post> get() {
         return postRepository.findAll();
     }
 
-    @PostMapping(path="/add")
+    @PostMapping(path="/posts/add")
     public @ResponseBody Post addNewPost (@RequestParam String name
         , @RequestParam int rating
         , @RequestParam String description) {
@@ -31,4 +33,17 @@ public class PostController {
         postRepository.save(p);
         return p;
     }
+
+    @DeleteMapping(path="/posts/delete/{id}")
+    public Map<String, Boolean> deletePost(@PathVariable(value = "id") Long id)
+    throws ResourceNotFoundException
+    {
+        Post post = postRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("No Post with this id exists"));
+        postRepository.delete(post);
+        Map<String, Boolean> res = new HashMap<>();
+        res.put("deleted", Boolean.TRUE);
+        return res;
+    }
+
 }

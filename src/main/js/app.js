@@ -16,7 +16,7 @@ class App extends React.Component {
 	}
 
 	loadFromServer(pageSize) {
-		const url = "/get";
+		const url = "/posts/get";
 		fetch(url, {
 			headers: {
 				'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ class App extends React.Component {
 	}
 
 	onCreate(formData) {
-		const url = "/add";
+		const url = "/posts/add";
 		fetch(url, {
 			method: 'POST',
 			credentials: 'same-origin',
