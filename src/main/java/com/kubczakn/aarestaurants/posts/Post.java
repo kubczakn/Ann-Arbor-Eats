@@ -1,7 +1,6 @@
 package com.kubczakn.aarestaurants.posts;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.kubczakn.aarestaurants.reviewers.Reviewer;
 
 import java.util.Objects;
 
@@ -18,15 +17,16 @@ public class Post {
     private @Version @JsonIgnore Long version;
 
     // Each post is associated with a user
-    private @ManyToOne Reviewer reviewer;
+    // TODO: Remove authentication restrictions for now
+//    private @ManyToOne Reviewer reviewer;
 
-    private Post() {}
+    Post() {}
 
-    public Post(String name, int rating, String description, Reviewer user) {
+    public Post(String name, int rating, String description ) {
         this.name = name;
         this.rating = rating;
         this.description = description;
-        this.reviewer = user;
+//        this.reviewer = user;
     }
 
     @Override
@@ -38,8 +38,7 @@ public class Post {
 			Objects.equals(name, post.name) &&
 			Objects.equals(rating, post.rating) &&
 			Objects.equals(description, post.description) &&
-            Objects.equals(version, post.version) &&
-            Objects.equals(reviewer, post.reviewer);
+            Objects.equals(version, post.version);
 	}
 
     public Long getId() {
@@ -54,19 +53,25 @@ public class Post {
         return name;
     }
 
+    public void setName(String name) {this.name = name;}
+
     public int getRating() {
         return rating;
     }
+
+    public void setRating(int rating) {this.rating = rating; }
 
     public String getDescription() {
         return description;
     }
 
+    public void setDescription(String description) {this.description = description; }
+
     public Long getVersion() { return version; }
 
     public void setVersion(Long version) { this.version = version; }
 
-    public Reviewer getReviewer() { return reviewer; }
+//    public Reviewer getReviewer() { return reviewer; }
 
-    public void setReviewer(Reviewer user) { this.reviewer = user; }
+//    public void setReviewer(Reviewer user) { this.reviewer = user; }
 }
