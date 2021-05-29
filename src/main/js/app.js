@@ -36,95 +36,51 @@ class App extends React.Component {
 			.catch((err) => console.log(err));
 	}
 
-	onCreate(newPost) {
+	onCreate(formData) {
 		const url = "/add";
-
-		// fetch(url, {
-		// 	body: JSON.stringify(text: newPost)
-		// })
+		fetch(url, {
+			method: 'POST',
+			credentials: 'same-origin',
+			body: formData
+		})
+			.then((response) =>{
+				if (!response.ok) throw Error(response.statusText);
+				return response.json();
+			})
+			.then((data) => {
+				this.setState((prevState) => ({
+					posts: prevState.posts.concat(data),
+				}));
+			})
+			.catch((error) => console.log(error));
 	}
 
 	onUpdate(post, updatedPost) {
-		// client({
-		// 	method: 'PUT',
-		// 	path: post.entity._links.self.href,
-		// 	entity: updatedPost,
-		// 	headers: {
-		// 		'Content-Type': 'application/json',
-		// 		'If-Match': post.headers.Etag
-		// 	}
-		// }).done(response => {
-		//     // Let websocket handler update the state
-		// }, response => {
-		// 	if (response.status.code === 403) {
-		// 		alert('ACCESS DENIED: You are not authorized to update ' +
-		// 			post.entity._links.self.href);
-		// 	}
-		// 	if (response.status.code === 412) {
-		// 		alert('DENIED: Unable to update ' +
-		// 			post.entity._links.self.href + '. Your copy is stale.');
-		// 	}
-		// 	else {
-		// 		alert("You are not authorized to update")
-		// 	}
-		// });
+
 	}
 
 	onNavigate(navUri) {
-		// client({
-		// 	method: 'GET',
-		// 	path: navUri
-		// }).then(postCollection => {
-		// 	this.links = postCollection.entity._links;
-		// 	this.page = postCollection.entity.page;
-		//
-		// 	return postCollection.entity._embedded.posts.map(post =>
-		// 		client({
-		// 			method: 'GET',
-		// 			path: post._links.self.href
-		// 		})
-		// 	);
-		// }).then(postPromises=> {
-		// 	return when.all(postPromises);
-		// }).done(posts => {
-		// 	this.setState({
-		// 		page: this.page,
-		// 		posts: posts,
-		// 		attributes: Object.keys(this.schema.properties),
-		// 		pageSize: this.state.pageSize,
-		// 		links: this.links
-		// 	});
-		// });
 	}
 
 	updatePageSize(pageSize) {
-		// if (pageSize !== this.state.pageSize) {
-		// 	this.loadFromServer(pageSize);
-		// }
 	}
 
 	onDelete(post) {
-		// client({method: 'DELETE', path: post.entity._links.self.href}).done(response =>
-		// {/* Let websocket handle UI update on delete */},
-		//     response => {
-		//     	if (response.status.code === 403) {
-		//     		alert('ACCESS DENIED: You are not authorized to delete' +
-		// 			post.entity._links.self.href);
-		// 		}
-		// 	});
+
 	}
 
 
 
 	componentDidMount() { 
 		this.loadFromServer(this.state.pageSize);
-
+		this.setState({attributes: ['name', 'rating', 'description']});
 	}
 
-	render() { 
+	render() {
 		return (
 			<div>
-				{/*<CreateDialog attributes={this.state.attributes} onCreate={this.onCreate}/>*/}
+
+				<CreateDialog attributes={this.state.attributes} onCreate={this.onCreate}/>
 				<PostList posts={this.state.posts}
 						  links={this.state.links}
 						  pageSize={this.state.pageSize}
@@ -140,56 +96,7 @@ class App extends React.Component {
 }
 
 // class UpdateDialog extends React.Component {
-// 	constructor(props) {
-// 		super(props);
-// 		this.handleSubmit = this.handleSubmit.bind(this);
-// 	}
-//
-// 	handleSubmit(e) {
-// 		e.preventDefault();
-// 		const updatedPost = {};
-// 		this.props.attributes.forEach(attribute => {
-// 			updatedPost[attribute] =
-// 				ReactDOM.findDOMNode(this.refs[attribute]).value.trim();
-// 		});
-// 		this.props.onUpdate(this.props.post, updatedPost);
-// 		window.location = '#';
-// 	}
-//
-// 	render() {
-// 		const inputs = this.props.attributes.map(attribute =>
-// 			<p key={this.props.post.entity[attribute]}>
-// 				<input type="text" placeholder={attribute}
-// 					   defaultValue={this.props.post.entity[attribute]}
-// 					   ref={attribute} className="field"/>
-// 			</p>
-// 		);
-// 		const dialogId = "updatePost-" + this.props.post.entity._links.self.href;
-// 		const isReviewer = this.props.post.entity.reviewer.name === this.props.loggedInReviewer;
-// 		if (isReviewer){
-// 			return ( 	<div key={this.props.post.entity._links.self.href}>
-// 							<a href={"#" + dialogId}>Update</a>
-// 							<div id={dialogId} className="modalDialog">
-// 								<div>
-// 									<a href="#" title={"Close"} className={"close"}>X</a>
-// 									<h2>Update a post</h2>
-// 									<form>
-// 										{inputs}
-// 										<button onClick={this.handleSubmit}>Update</button>
-// 									</form>
-// 								</div>
-// 							</div>
-// 						</div>
-// 			);
-// 		}
-// 		else {
-// 			return  ( <div>
-// 						<a>Denied</a>
-// 					</div>
-// 			);
-// 		}
-//
-// 	}
+
 // }
 
 class CreateDialog extends React.Component {
@@ -202,11 +109,11 @@ class CreateDialog extends React.Component {
 
 	handleSubmit(e) {
 		e.preventDefault();
-		const newPost = {};
+		const formData = new FormData();
 		this.props.attributes.forEach(attribute => {
-			newPost[attribute] = ReactDOM.findDOMNode(this.refs[attribute]).value.trim();
+			 formData.append(attribute, ReactDOM.findDOMNode(this.refs[attribute]).value.trim());
 		});
-		this.props.onCreate(newPost);
+		this.props.onCreate(formData);
 
 		// clear out the dialog's inputs
 		this.props.attributes.forEach(attribute => {

@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;
 
@@ -13,38 +12,12 @@ public class PostController {
     @Autowired
     private PostRepository postRepository;
 
-    JdbcTemplate jdbc;
-
-//    @GetMapping("/get")
-//    public @ResponseBody PostResponse get() {
-//        // TODO: Finish
-//        Iterable<Post> posts = postRepository.findAll();
-//        PostResponse response = new PostResponse();
-//        response.setStatus(true);
-//        response.setMessage("Success");
-//        response.setData(posts);
-//        System.out.println(response);
-//        return response;
-//    }
-
-//        @GetMapping("/get")
-//        public ResponseEntity get() {
-//            // TODO: Finish
-//            Iterable<Post> posts = postRepository.findAll();
-//            PostResponse response = new PostResponse();
-//            response.setStatus(true);
-//            response.setMessage("Success");
-//            response.setData(posts);
-//            System.out.println(response);
-//            return ResponseEntity.status(HttpStatus.OK).body(response);
-//        }
-
     @GetMapping("/get")
     Iterable<Post> get() {
         return postRepository.findAll();
     }
 
-    @PostMapping(path="/add") // Map ONLY POST Requests
+    @PostMapping(path="/add")
     public @ResponseBody Post addNewPost (@RequestParam String name
         , @RequestParam int rating
         , @RequestParam String description) {

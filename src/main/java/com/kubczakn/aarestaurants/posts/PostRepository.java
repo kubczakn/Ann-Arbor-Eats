@@ -5,7 +5,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 //@PreAuthorize("hasRole('ROLE_REVIEWER')")
-public interface PostRepository extends CrudRepository<Post, Long>
+public interface PostRepository extends PagingAndSortingRepository<Post, Long>
 {
 
     // Only users that created a certain post can save, update, or delete a certain post
