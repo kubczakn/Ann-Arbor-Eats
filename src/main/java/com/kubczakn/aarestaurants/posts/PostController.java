@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,6 +51,21 @@ public class PostController {
         Map<String, Boolean> res = new HashMap<>();
         res.put("deleted", Boolean.TRUE);
         return res;
+    }
+
+    @PutMapping(path="/posts/{id}")
+    public Post updatePost(@PathVariable(value = "id") Long id
+        , @RequestParam String name
+        , @RequestParam int rating
+        , @RequestParam String description) throws ResourceNotFoundException {
+
+        Post post = postRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("No Post with this id exists"));
+        post.setName(name);
+        post.setRating(rating);
+        post.setDescription(description);
+        postRepository.save(post);
+        return post;
     }
 
 }
