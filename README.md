@@ -1,2 +1,2 @@
 # Ann-Arbor-Eats
-App that allows user to create an account and post reviews of local restaurants in Ann Arbor.
+Application built with React and Spring Boot that highlights the best restaurants Ann Arbor has to offer.
