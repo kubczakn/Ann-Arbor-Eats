@@ -15,8 +15,14 @@ public class PostController {
     private PostRepository postRepository;
 
     @GetMapping("/posts/get")
-    Iterable<Post> get() {
-        return postRepository.findAll();
+    Map<Long, Post> get() {
+        Map<Long, Post> res = new HashMap<>();
+        Iterable<Post> posts = postRepository.findAll();
+        for (Post p: posts) {
+           Long id = p.getId();
+           res.put(id, p);
+        }
+        return res;
     }
 
     @PostMapping(path="/posts/add")

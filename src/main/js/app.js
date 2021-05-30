@@ -8,7 +8,7 @@ class App extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {posts: [], attributes: [], page: 1,  pageSize: 2, links: {}};
+		this.state = {posts: {}, attributes: [], page: 1,  pageSize: 2, links: {}};
 		this.updatePageSize = this.updatePageSize.bind(this);
 		this.onCreate = this.onCreate.bind(this);
 		this.onDelete = this.onDelete.bind(this);
@@ -48,9 +48,11 @@ class App extends React.Component {
 				return response.json();
 			})
 			.then((data) => {
-				this.setState((prevState) => ({
-					posts: prevState.posts.concat(data),
-				}));
+				const newPosts = this.state.posts;
+				newPosts[data.id] = data;
+				this.setState({
+					posts: newPosts,
+				});
 			})
 			.catch((error) => console.log(error));
 	}
@@ -65,11 +67,18 @@ class App extends React.Component {
 	updatePageSize(pageSize) {
 	}
 
-	onDelete(post) {
-
+	onDelete(id) {
+		const url = `/posts/delete/${id}`;
+		fetch(url, {
+			method: 'DELETE',
+			credentials: 'same-origin',
+		})
+		const newPosts = this.state.posts;
+		delete newPosts[id];
+		this.setState({
+			posts: newPosts,
+		})
 	}
-
-
 
 	componentDidMount() { 
 		this.loadFromServer(this.state.pageSize);
@@ -160,10 +169,14 @@ class PostList extends React.Component{
 	}
 
 	render() {
-		const posts = this.props.posts.map(post =>
-			<Post key={post.id} post={post} attributes={this.props.attributes} onUpdate={this.props.onUpdate} onDelete={this.props.onDelete}/>
+		//
+		// const posts = this.props.posts.map(post =>
+		// 	<Post key={post.id} post={post} attributes={this.props.attributes} onUpdate={this.props.onUpdate} onDelete={this.props.onDelete}/>
+		// );
+		const posts = Object.keys(this.props.posts).map((key, index) =>
+			<Post key={index} post={this.props.posts[key]} attributes={this.props.attributes} onUpdate={this.props.onUpdate} onDelete={this.props.onDelete}/>
 		);
-	
+
 		return (
 			<div>
 				<input ref="pageSize" defaultValue={this.props.pageSize}/>
@@ -189,7 +202,7 @@ class Post extends React.Component{
 	}
 
 	handleDelete() {
-		this.props.onDelete(this.props.post);
+		this.props.onDelete(this.props.post.id);
 	}
 	render() {
 		return (
