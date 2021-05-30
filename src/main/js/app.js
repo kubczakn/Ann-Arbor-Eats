@@ -57,8 +57,25 @@ class App extends React.Component {
 			.catch((error) => console.log(error));
 	}
 
-	onUpdate(post, updatedPost) {
-
+	onUpdate(formData, id) {
+		const url = `posts/${id}`;
+		fetch(url, {
+			method: 'PUT',
+			credentials: 'same-origin',
+			body: formData
+		})
+			.then((response) =>{
+				if (!response.ok) throw Error(response.statusText);
+				return response.json();
+			})
+			.then((data) => {
+				const newPosts = this.state.posts;
+				newPosts[data.id] = data;
+				this.setState({
+					posts: newPosts,
+				});
+			})
+			.catch((error) => console.log(error));
 	}
 
 	onNavigate(navUri) {
@@ -104,15 +121,60 @@ class App extends React.Component {
 	}
 }
 
-// class UpdateDialog extends React.Component {
-
-// }
-
-class CreateDialog extends React.Component {
-
+class UpdateDialog extends React.Component {
 	constructor(props) {
 		super(props);
-		this.myRef = React.createRef();
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	handleSubmit(e) {
+		e.preventDefault();
+		const formData = new FormData();
+		this.props.attributes.forEach(attribute => {
+			formData.append(attribute, ReactDOM.findDOMNode(this.refs[attribute]).value.trim());
+		});
+		this.props.onUpdate(formData, this.props.post.id);
+
+		// clear out the dialog's inputs
+		this.props.attributes.forEach(attribute => {
+			ReactDOM.findDOMNode(this.refs[attribute]).value = '';
+		});
+
+		// Navigate away from the dialog to hide it.
+		window.location = "#";
+	}
+
+	render() {
+		const inputs = this.props.attributes.map(attribute =>
+			<p key={attribute}>
+				<input type="text" placeholder={attribute} ref={attribute} className="field"/>
+			</p>
+		);
+
+		return (
+			<div>
+				<a href="#updatePost">Update</a>
+
+				<div id="updatePost" className="modalDialog">
+					<div>
+						<a href="#" title="Close" className="close">X</a>
+
+						<h2>Update</h2>
+
+						<form>
+							{inputs}
+							<button onClick={this.handleSubmit}>Update</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		)
+	}
+}
+
+class CreateDialog extends React.Component {
+	constructor(props) {
+		super(props);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
@@ -159,7 +221,6 @@ class CreateDialog extends React.Component {
 			</div>
 		)
 	}
-
 }
 
 class PostList extends React.Component{
@@ -169,10 +230,6 @@ class PostList extends React.Component{
 	}
 
 	render() {
-		//
-		// const posts = this.props.posts.map(post =>
-		// 	<Post key={post.id} post={post} attributes={this.props.attributes} onUpdate={this.props.onUpdate} onDelete={this.props.onDelete}/>
-		// );
 		const posts = Object.keys(this.props.posts).map((key, index) =>
 			<Post key={index} post={this.props.posts[key]} attributes={this.props.attributes} onUpdate={this.props.onUpdate} onDelete={this.props.onDelete}/>
 		);
@@ -211,8 +268,8 @@ class Post extends React.Component{
 				<td>{this.props.post.rating}</td>
 				<td>{this.props.post.description}</td>
 				<td>
-					{/*<UpdateDialog post={this.props.post} attributes={this.props.attributes}*/}
-					{/*			  onUpdate={this.props.onUpdate}/>*/}
+					<UpdateDialog post={this.props.post} attributes={this.props.attributes}
+								  onUpdate={this.props.onUpdate}/>
 				</td>
                	<td>
 					<button onClick={this.handleDelete}>Delete</button>
