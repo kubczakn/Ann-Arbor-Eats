@@ -24,7 +24,7 @@ public class Reviewer
 
     private String[] roles;
 
-    protected Reviewer() {}
+    public Reviewer() {}
 
     public Reviewer(String name, String password, String[] roles) {
         this.name = name;

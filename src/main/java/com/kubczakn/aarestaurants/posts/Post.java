@@ -1,6 +1,7 @@
 package com.kubczakn.aarestaurants.posts;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.kubczakn.aarestaurants.reviewers.Reviewer;
 
 import java.util.Objects;
 
@@ -17,16 +18,15 @@ public class Post {
     private @Version @JsonIgnore Long version;
 
     // Each post is associated with a user
-    // TODO: Remove authentication restrictions for now
-//    private @ManyToOne Reviewer reviewer;
+    private @ManyToOne Reviewer reviewer;
 
     Post() {}
 
-    public Post(String name, int rating, String description ) {
+    public Post(String name, int rating, String description, Reviewer reviewer) {
         this.name = name;
         this.rating = rating;
         this.description = description;
-//        this.reviewer = user;
+        this.reviewer = reviewer;
     }
 
     @Override
@@ -71,7 +71,7 @@ public class Post {
 
     public void setVersion(Long version) { this.version = version; }
 
-//    public Reviewer getReviewer() { return reviewer; }
+    public Reviewer getReviewer() { return reviewer; }
 
-//    public void setReviewer(Reviewer user) { this.reviewer = user; }
+    public void setReviewer(Reviewer user) { this.reviewer = user; }
 }

@@ -90,6 +90,7 @@ class App extends React.Component {
 			method: 'DELETE',
 			credentials: 'same-origin',
 		})
+			.catch((error) => console.log(error));
 		const newPosts = this.state.posts;
 		delete newPosts[id];
 		this.setState({
