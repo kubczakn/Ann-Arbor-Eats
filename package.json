@@ -20,6 +20,9 @@
   },
   "homepage": "https://github.com/kubczakn/Ann-Arbor-Eats",
   "dependencies": {
+    "@material-ui/core": "^4.11.4",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/styles": "^4.11.4",
     "@stomp/stompjs": "^6.1.0",
     "net": "^1.0.2",
     "react": "^16.14.0",

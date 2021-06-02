@@ -11,7 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
-@RepositoryEventHandler(Reviewer.class)
+@RepositoryEventHandler(Post.class)
 public class RestEventHandler
 {
     private final ReviewerRepository repo;

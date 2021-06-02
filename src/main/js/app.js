@@ -1,8 +1,14 @@
 'use strict';
+import { makeStyles } from "@material-ui/core/styles";
+import { Typography } from "@material-ui/core";
 
 const React = require('react');
 const ReactDOM = require('react-dom');
 const when = require('when');
+
+const useStyles = makeStyles({
+
+});
 
 class App extends React.Component { 
 
@@ -125,7 +131,15 @@ class App extends React.Component {
 class UpdateDialog extends React.Component {
 	constructor(props) {
 		super(props);
+		this.state = { image: null };
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleUpload = this.handleUpload.bind(this);
+	}
+
+	handleUpload(e) {
+		this.setState({
+			image: e.target.files[0],
+		});
 	}
 
 	handleSubmit(e) {
@@ -134,8 +148,8 @@ class UpdateDialog extends React.Component {
 		this.props.attributes.forEach(attribute => {
 			formData.append(attribute, ReactDOM.findDOMNode(this.refs[attribute]).value.trim());
 		});
+		formData.append("image", this.state.image);
 		this.props.onUpdate(formData, this.props.post.id);
-
 		// clear out the dialog's inputs
 		this.props.attributes.forEach(attribute => {
 			ReactDOM.findDOMNode(this.refs[attribute]).value = '';
@@ -162,8 +176,11 @@ class UpdateDialog extends React.Component {
 
 						<h2>Update</h2>
 
-						<form>
+						<form encType={"multipart/form-data"}>
 							{inputs}
+							<p>
+								<input type="file" name="image" accept={"image/png, image/jpeg"} className="field" onChange={this.handleUpload}/>
+							</p>
 							<button onClick={this.handleSubmit}>Update</button>
 						</form>
 					</div>
@@ -176,7 +193,15 @@ class UpdateDialog extends React.Component {
 class CreateDialog extends React.Component {
 	constructor(props) {
 		super(props);
+		this.state = { image: null };
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleUpload = this.handleUpload.bind(this);
+	}
+
+	handleUpload(e) {
+		this.setState({
+			image: e.target.files[0],
+		});
 	}
 
 	handleSubmit(e) {
@@ -185,8 +210,8 @@ class CreateDialog extends React.Component {
 		this.props.attributes.forEach(attribute => {
 			 formData.append(attribute, ReactDOM.findDOMNode(this.refs[attribute]).value.trim());
 		});
+		formData.append('image', this.state.image);
 		this.props.onCreate(formData);
-
 		// clear out the dialog's inputs
 		this.props.attributes.forEach(attribute => {
 			ReactDOM.findDOMNode(this.refs[attribute]).value = '';
@@ -197,6 +222,7 @@ class CreateDialog extends React.Component {
 	}
 
 	render() {
+		// TODO: Set defaults for input fields
 		const inputs = this.props.attributes.map(attribute =>
 			<p key={attribute}>
 				<input type="text" placeholder={attribute} ref={attribute} className="field"/>
@@ -213,8 +239,11 @@ class CreateDialog extends React.Component {
 
 						<h2>Create new post</h2>
 
-						<form>
+						<form  encType="multipart/form-data">
 							{inputs}
+							<p>
+								<input type="file" name="image" accept={"image/png, image/jpeg"} className="field" onChange={this.handleUpload}/>
+							</p>
 							<button onClick={this.handleSubmit}>Create</button>
 						</form>
 					</div>
@@ -237,7 +266,7 @@ class PostList extends React.Component{
 
 		return (
 			<div>
-				<input ref="pageSize" defaultValue={this.props.pageSize}/>
+				{/*<input ref="pageSize" defaultValue={this.props.pageSize}/>*/}
 				<table>
 					<tbody>
 						<tr>
@@ -263,11 +292,13 @@ class Post extends React.Component{
 		this.props.onDelete(this.props.post.id);
 	}
 	render() {
+		const image = "uploads/" + this.props.post.image;
 		return (
 			<tr>
 				<td>{this.props.post.name}</td>
 				<td>{this.props.post.rating}</td>
 				<td>{this.props.post.description}</td>
+				<td><img src={image} alt={"image"}/></td>
 				<td>
 					<UpdateDialog post={this.props.post} attributes={this.props.attributes}
 								  onUpdate={this.props.onUpdate}/>

@@ -14,6 +14,8 @@ public class Post {
     private int rating;
     private String description;
 
+    private String image;
+
     // Used to support versioning of resources
     private @Version @JsonIgnore Long version;
 
@@ -22,10 +24,11 @@ public class Post {
 
     Post() {}
 
-    public Post(String name, int rating, String description, Reviewer reviewer) {
+    public Post(String name, int rating, String description, String image, Reviewer reviewer) {
         this.name = name;
         this.rating = rating;
         this.description = description;
+        this.image = image;
         this.reviewer = reviewer;
     }
 
@@ -40,6 +43,12 @@ public class Post {
 			Objects.equals(description, post.description) &&
             Objects.equals(version, post.version);
 	}
+
+//    @Transient
+//    public String getImagePath() {
+//        if (image == null || id == null) return null;
+//        return "/uploads/" + id + "/" + image;
+//    }
 
     public Long getId() {
         return id;
@@ -74,4 +83,14 @@ public class Post {
     public Reviewer getReviewer() { return reviewer; }
 
     public void setReviewer(Reviewer user) { this.reviewer = user; }
+
+    public String getImage()
+    {
+        return image;
+    }
+
+    public void setImage(String image)
+    {
+        this.image = image;
+    }
 }
