@@ -292,7 +292,7 @@ class Post extends React.Component{
 		this.props.onDelete(this.props.post.id);
 	}
 	render() {
-		const image = "uploads/" + this.props.post.image;
+		const image = "uploads/" + this.props.post.id + "/" + this.props.post.image;
 		return (
 			<tr>
 				<td>{this.props.post.name}</td>
