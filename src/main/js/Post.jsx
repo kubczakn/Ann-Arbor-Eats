@@ -25,7 +25,6 @@ const useStyles = makeStyles({
 });
 
 // TODO: Add update / edit button, or maybe add somewhere else
-// Try destructuring
 const Post = ({ post, attributes, onUpdate, onDelete }) => {
     const handleDelete = () => onDelete(post.id);
     const image = "uploads/" + post.id + "/" + post.image;
@@ -45,7 +44,6 @@ const Post = ({ post, attributes, onUpdate, onDelete }) => {
         		</Typography>
         		<CardMedia
         			className={classes.media}
-        			// src={image}
 					image={image}
         			/>
 				<CardActions>

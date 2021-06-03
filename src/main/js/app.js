@@ -1,5 +1,5 @@
 'use strict';
-import Post from "./Post.jsx";
+import Header from "./Header.jsx";
 import PostList from "./PostList.jsx";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -19,23 +19,17 @@ const ReactDOM = require('react-dom');
 
 // TODO: Modularize all of this
 
-// For card
-const useStyles = makeStyles({
-
-});
-
-class App extends React.Component { 
+class App extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {posts: {}, attributes: [], page: 1,  pageSize: 2, links: {}};
-		this.updatePageSize = this.updatePageSize.bind(this);
+		this.state = {posts: {}, attributes: []};
 		this.onCreate = this.onCreate.bind(this);
 		this.onDelete = this.onDelete.bind(this);
 		this.onUpdate = this.onUpdate.bind(this);
 	}
 
-	loadFromServer(pageSize) {
+	loadFromServer() {
 		const url = "/posts/get";
 		fetch(url, {
 			headers: {
@@ -98,12 +92,6 @@ class App extends React.Component {
 			.catch((error) => console.log(error));
 	}
 
-	onNavigate(navUri) {
-	}
-
-	updatePageSize(pageSize) {
-	}
-
 	onDelete(id) {
 		const url = `/posts/delete/${id}`;
 		fetch(url, {
@@ -126,18 +114,13 @@ class App extends React.Component {
 	render() {
 		// TODO: Fix passing of props, destructuring, callbacks
 		return (
-			<Grid container direction={"column"} justify={"flex-end"} alignItems={"center"}>
+			<Grid container direction={"column"}>
 				{/*Header*/}
-				{/*<Grid item container>*/}
-				{/*	<CreateDialog attributes={this.state.attributes} onCreate={this.onCreate}/>*/}
-				{/*</Grid>*/}
-				<Grid item >
-					<CreateDialog attributes={this.state.attributes} onCreate={this.onCreate}/>
-				</Grid>
+				<Header attributes={this.state.attributes} onCreate={this.onCreate}/>
 				{/*Main content*/}
 				<Grid item container>
 					{/*Left Size*/}
-					<Grid item xs={0} sm={2}/>
+					<Grid item xs={false} sm={2}/>
 					{/*Middle*/}
 					<Grid item xs={12} sm={8}>
 						<PostList
@@ -148,78 +131,14 @@ class App extends React.Component {
 						/>
 					</Grid>
 					{/*Right Size*/}
-					<Grid item xs={0} sm={2}/>
+					<Grid item xs={false} sm={2}/>
 				</Grid>
 			</Grid>
 		)
 	}
 }
 
-class CreateDialog extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = { image: null };
-		this.handleSubmit = this.handleSubmit.bind(this);
-		this.handleUpload = this.handleUpload.bind(this);
-	}
-
-	handleUpload(e) {
-		this.setState({
-			image: e.target.files[0],
-		});
-	}
-
-	handleSubmit(e) {
-		e.preventDefault();
-		const formData = new FormData();
-		this.props.attributes.forEach(attribute => {
-			formData.append(attribute, ReactDOM.findDOMNode(this.refs[attribute]).value.trim());
-		});
-		formData.append('image', this.state.image);
-		this.props.onCreate(formData);
-		// clear out the dialog's inputs
-		this.props.attributes.forEach(attribute => {
-			ReactDOM.findDOMNode(this.refs[attribute]).value = '';
-		});
-
-		// Navigate away from the dialog to hide it.
-		window.location = "#";
-	}
-
-	render() {
-		// TODO: Set defaults for input fields
-		const inputs = this.props.attributes.map(attribute =>
-			<p key={attribute}>
-				<input type="text" placeholder={attribute} ref={attribute} className="field"/>
-			</p>
-		);
-
-		return (
-			<AppBar position={"static"}>
-				<Toolbar>
-					<Button href="#createPost">Create</Button>
-					<Typography>Ann Arbor Eats</Typography>
-					<div id="createPost" className="modalDialog">
-						<div>
-							<a href="#" title="Close" className="close">X</a>
-
-							<h2>Create new post</h2>
-
-							<form  encType="multipart/form-data">
-								{inputs}
-								<p>
-									<input type="file" name="image" accept={"image/png, image/jpeg"} className="field" onChange={this.handleUpload}/>
-								</p>
-								<button onClick={this.handleSubmit}>Create</button>
-							</form>
-						</div>
-					</div>
-				</Toolbar>
-			</AppBar>
-		)
-	}
-}
-
+// TODO: Modularize
 class UpdateDialog extends React.Component {
 	constructor(props) {
 		super(props);
