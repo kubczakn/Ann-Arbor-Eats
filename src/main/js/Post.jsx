@@ -24,7 +24,8 @@ const useStyles = makeStyles({
 	},
 });
 
-// TODO: Add update / edit button, or maybe add somewhere else
+// TODO: Add update / edit button, or maybe add somewhere else; patch replace operation
+// TODO: Card header
 const Post = ({ post, attributes, onUpdate, onDelete }) => {
     const handleDelete = () => onDelete(post.id);
     const image = "uploads/" + post.id + "/" + post.image;

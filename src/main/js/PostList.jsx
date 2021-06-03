@@ -13,7 +13,7 @@ const useStyles = makeStyles({
 const PostList = ({ posts, attributes, onUpdate, onDelete }) => {
     const classes = useStyles();
     const post_content = Object.keys(posts).map((key, index) =>
-        <Grid item key={index} className={classes.root} xs={6}>
+        <Grid item key={index} className={classes.root} xs={12} md={6}>
             <Post
                 post={posts[key]}
                 attributes={attributes}

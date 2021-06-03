@@ -17,7 +17,7 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 
 
-// TODO: Modularize all of this
+// TODO: Modularize all of this, add logic to remove image from storage on delete
 
 class App extends React.Component {
 

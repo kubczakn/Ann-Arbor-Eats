@@ -1,5 +1,10 @@
 package com.kubczakn.aarestaurants.posts;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import com.kubczakn.aarestaurants.reviewers.Reviewer;
 import com.kubczakn.aarestaurants.reviewers.ReviewerRepository;
 import com.kubczakn.aarestaurants.utils.FileUploadUtil;
@@ -64,8 +69,6 @@ public class PostController {
     {
         Post post = postRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("No Post with this id exists"));
-        // TODO: Figure out why getReviewer() returns null
-//        System.out.println(post.getReviewer().getName();
         postRepository.delete(post);
         Map<String, Boolean> res = new HashMap<>();
         res.put("deleted", Boolean.TRUE);
@@ -82,7 +85,7 @@ public class PostController {
     {
 
         Post post = postRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("No Post with this id exists"));
+            .orElseThrow(() -> new ResourceNotFoundException("No post with this id exists"));
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         post.setName(name);
         post.setRating(rating);
@@ -92,6 +95,28 @@ public class PostController {
         String uploadDir = "uploads/" + post.getId();
         FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
         return post;
+    }
+
+    @PatchMapping(path="/posts/{id}", consumes = "application/json-patch+json")
+    public Post editPost(@PathVariable(value = "id") Long id
+       , @RequestBody JsonPatch patch
+    )
+        throws ResourceNotFoundException, IOException, JsonPatchException
+    {
+        Post post = postRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("No post with this id exists"));
+       return applyPatchToPost(patch, post);
+    }
+
+
+    private Post applyPatchToPost(
+        JsonPatch patch, Post targetPost
+    ) throws JsonPatchException, JsonProcessingException
+    {
+        ObjectMapper objectMapper = new ObjectMapper();
+        // Apply patch and return patched post
+        JsonNode patched = patch.apply(objectMapper.convertValue(targetPost, JsonNode.class));
+        return objectMapper.treeToValue(patched, Post.class);
     }
 
 }
