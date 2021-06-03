@@ -26,22 +26,22 @@ const useStyles = makeStyles({
 
 // TODO: Add update / edit button, or maybe add somewhere else
 // Try destructuring
-const Post = (props) => {
-    const handleDelete = () => props.onDelete(props.value.id);
-    const image = "uploads/" + props.value.id + "/" + props.value.image;
+const Post = ({ post, attributes, onUpdate, onDelete }) => {
+    const handleDelete = () => onDelete(post.id);
+    const image = "uploads/" + post.id + "/" + post.image;
     const classes = useStyles();
     return (
         // Material-UI card component for review / post
         <Card className={classes.root}>
         	<CardContent>
         		<Typography className={classes.title} color="textSecondary" gutterBottom>
-        			{props.value.name}
+        			{post.name}
         		</Typography>
         		<Typography variant="h5" component="h2">
-        			{props.value.rating}
+        			{post.rating}
         		</Typography>
         		<Typography className={classes.pos} color="textSecondary">
-        			{props.value.description}
+        			{post.description}
         		</Typography>
         		<CardMedia
         			className={classes.media}

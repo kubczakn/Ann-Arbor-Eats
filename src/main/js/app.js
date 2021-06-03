@@ -1,5 +1,6 @@
 'use strict';
 import Post from "./Post.jsx";
+import PostList from "./PostList.jsx";
 import { makeStyles } from "@material-ui/core/styles";
 import {
 	Typography,
@@ -123,6 +124,7 @@ class App extends React.Component {
 	}
 
 	render() {
+		// TODO: Fix passing of props, destructuring, callbacks
 		return (
 			<Grid container direction={"column"} justify={"flex-end"} alignItems={"center"}>
 				{/*Header*/}
@@ -138,14 +140,11 @@ class App extends React.Component {
 					<Grid item xs={0} sm={2}/>
 					{/*Middle*/}
 					<Grid item xs={12} sm={8}>
-						<PostList posts={this.state.posts}
-								  links={this.state.links}
-								  pageSize={this.state.pageSize}
-								  attributes={this.state.attributes}
-								  onNavigate={this.onNavigate}
-								  onDelete={this.onDelete}
-								  onUpdate={this.onUpdate}
-								  updatePageSize={this.updatePageSize}
+						<PostList
+							posts={this.state.posts}
+							attributes={this.state.attributes}
+							onDelete={this.onDelete}
+							onUpdate={this.onUpdate}
 						/>
 					</Grid>
 					{/*Right Size*/}
@@ -278,36 +277,6 @@ class UpdateDialog extends React.Component {
 						</form>
 					</div>
 				</div>
-			</div>
-		)
-	}
-}
-
-class PostList extends React.Component{
-
-	constructor(props) {
-		super(props);
-	}
-
-	render() {
-		const posts = Object.keys(this.props.posts).map((key, index) =>
-			// <Post key={index} post={this.props.posts[key]} attributes={this.props.attributes} onUpdate={this.props.onUpdate} onDelete={this.props.onDelete}/>
-			<Post key={index} value={this.props.posts[key]}/>
-		);
-
-		return (
-			<div>
-				{/*<input ref="pageSize" defaultValue={this.props.pageSize}/>*/}
-				<table>
-					<tbody>
-						{/*<tr>*/}
-						{/*	<th>Name</th>*/}
-						{/*	<th>Rating</th>*/}
-						{/*	<th>Description</th>*/}
-						{/*</tr>*/}
-						{posts}
-					</tbody>
-				</table>
 			</div>
 		)
 	}
