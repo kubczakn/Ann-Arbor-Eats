@@ -92,6 +92,36 @@ class App extends React.Component {
 			.catch((error) => console.log(error));
 	}
 
+	onPatch(id, element, value) {
+		const url = `posts/$url}`;
+		const body = {
+			op: "replace",
+			path: `/{element}`,
+			value: value
+		}
+		fetch(url, {
+			headers: {
+				'Content-type': 'application/json',
+			},
+			method: 'PATCH',
+			credentials: 'same-origin',
+			body: JSON.stringify(body)
+		})
+			.then((response) =>{
+				if (!response.ok) throw Error(response.statusText);
+				return response.json();
+			})
+			.then((data) => {
+				const newPosts = this.state.posts;
+				newPosts[data.id] = data;
+				this.setState({
+					posts: newPosts,
+				});
+			})
+			.catch((error) => console.log(error));
+
+	}
+
 	onDelete(id) {
 		const url = `/posts/delete/${id}`;
 		fetch(url, {

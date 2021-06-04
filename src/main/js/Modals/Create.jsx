@@ -4,8 +4,8 @@ import {
     Button,
     Dialog,
     DialogContent,
-    DialogTitle,
-     TextField,
+    DialogTitle, Grid,
+    TextField,
     Typography
 } from "@material-ui/core";
 
@@ -65,27 +65,37 @@ const CreateDialog = ( {attributes, onCreate}) => {
                 <DialogTitle>Create a new post</DialogTitle>
                 <DialogContent>
                     <form encType="multipart/form-data">
-                        <TextField
-                            label="Name"
-                            type="text"
-                            onChange={event => setName(event.target.value)}
-                        />
-                        <TextField
-                            label="Rating"
-                            type="text"
-                            onChange={event => setRating(event.target.value)}
-                        />
-                        <TextField
-                            label="Description"
-                            type="text"
-                            onChange={event => setDescription(event.target.value)}
-                        />
-                        <TextField
-                            label="Image"
-                            type="file"
-                            accept="image/png, image/jpeg"
-                            onChange={handleUpload}
-                        />
+                        <Grid container>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Name"
+                                    type="text"
+                                    onChange={event => setName(event.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Rating"
+                                    type="text"
+                                    onChange={event => setRating(event.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Description"
+                                    type="text"
+                                    onChange={event => setDescription(event.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Image"
+                                    type="file"
+                                    accept="image/png, image/jpeg"
+                                    onChange={handleUpload}
+                                />
+                            </Grid>
+                        </Grid>
                         <Button onClick={handleSubmit}>Create</Button>
                     </form>
                 </DialogContent>

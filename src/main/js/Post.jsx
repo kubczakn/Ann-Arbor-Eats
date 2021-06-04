@@ -1,7 +1,16 @@
-import React from "react";
+import React, {useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
-import {Button, Card, CardActions, CardContent, CardMedia, Typography} from "@material-ui/core";
-
+import {
+	Button,
+	Card,
+	CardActions,
+	CardContent,
+	CardHeader,
+	CardMedia, IconButton,
+	Typography
+} from "@material-ui/core";
+import EditIcon from '@material-ui/icons/Edit';
+import UpdateDialog from './Modals/Update.jsx';
 
 const useStyles = makeStyles({
 	root: {
@@ -28,15 +37,23 @@ const useStyles = makeStyles({
 // TODO: Card header
 const Post = ({ post, attributes, onUpdate, onDelete }) => {
     const handleDelete = () => onDelete(post.id);
+    // const handlePatch = () => onPatch(post.id, )
     const image = "uploads/" + post.id + "/" + post.image;
     const classes = useStyles();
     return (
         // Material-UI card component for review / post
         <Card className={classes.root}>
+			<CardHeader
+				action={
+					<UpdateDialog post={post}/>
+				}
+				title={post.name}
+			/>
         	<CardContent>
-        		<Typography className={classes.title} color="textSecondary" gutterBottom>
-        			{post.name}
-        		</Typography>
+        		{/*<Typography className={classes.title} color="textSecondary" gutterBottom>*/}
+        		{/*	{post.name}*/}
+        		{/*</Typography>*/}
+				{/*<Button>Edit</Button>*/}
         		<Typography variant="h5" component="h2">
         			{post.rating}
         		</Typography>
