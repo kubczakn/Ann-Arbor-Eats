@@ -1,6 +1,7 @@
 'use strict';
 import Header from "./Header.jsx";
 import PostList from "./PostList.jsx";
+import MapContainer from "./MapContainer.jsx";
 import { makeStyles } from "@material-ui/core/styles";
 import {
 	Typography,
@@ -142,11 +143,15 @@ class App extends React.Component {
 	}
 
 	render() {
+		// TODO: Pass location data to map for markers
 		// TODO: Fix passing of props, destructuring, callbacks
 		return (
 			<Grid container direction={"column"}>
 				{/*Header*/}
 				<Header attributes={this.state.attributes} onCreate={this.onCreate}/>
+				<Grid item xs={12}>
+					<MapContainer/>
+				</Grid>
 				{/*Main content*/}
 				<Grid item container>
 					{/*Left Size*/}

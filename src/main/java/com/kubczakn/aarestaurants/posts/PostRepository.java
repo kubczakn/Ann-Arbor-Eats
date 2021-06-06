@@ -8,8 +8,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public interface PostRepository extends PagingAndSortingRepository<Post, Long>
 {
 
+    // TODO: Allow any user to submit a rating for a post
     // Only users that created a certain post can save, update, or delete a certain post
-    // TODO: Fix so only owners of a post can update them
     @Override
     @PreAuthorize("#post?.reviewer == null or #post?.reviewer?.name == authentication?.name")
     Post save(@Param("post") Post post);

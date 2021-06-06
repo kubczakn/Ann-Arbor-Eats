@@ -30,10 +30,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         http
             .authorizeRequests()
                 .antMatchers("/built/**", "/main.css").permitAll()
-//                .antMatchers("/").permitAll() // (3)
+                .antMatchers("/**").authenticated() // (3)
                 .anyRequest().authenticated() // (4)
                 .and()
             .formLogin() // (5)
