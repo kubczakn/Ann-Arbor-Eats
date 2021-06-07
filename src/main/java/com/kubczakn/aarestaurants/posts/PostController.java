@@ -43,7 +43,6 @@ public class PostController {
 
     @PostMapping(path="/posts/add")
     public @ResponseBody Post addNewPost (@RequestParam String name
-        , @RequestParam int rating
         , @RequestParam String description
         , @RequestParam("image") MultipartFile multipartFile)
         throws IOException
@@ -53,7 +52,8 @@ public class PostController {
         String reviewerName = SecurityContextHolder.getContext().getAuthentication().getName();
         Reviewer reviewer = reviewerRepository.findByName(reviewerName);
         p.setName(name);
-        p.setRating(rating);
+        p.setRating(0);
+        p.setNum_ratings(0);
         p.setDescription(description);
         p.setReviewer(reviewer);
         p.setImage(fileName);

@@ -8,10 +8,12 @@ import java.util.Objects;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "posts")
 public class Post {
     private @Id @GeneratedValue Long id; 
     private String name;
     private int rating;
+    private int num_ratings;
     private String description;
 
     private String image;
@@ -26,7 +28,8 @@ public class Post {
 
     public Post(String name, int rating, String description, String image, Reviewer reviewer) {
         this.name = name;
-        this.rating = rating;
+        this.rating = 0;
+        this.num_ratings = 0;
         this.description = description;
         this.image = image;
         this.reviewer = reviewer;
@@ -92,5 +95,15 @@ public class Post {
     public void setImage(String image)
     {
         this.image = image;
+    }
+
+    public int getNum_ratings()
+    {
+        return num_ratings;
+    }
+
+    public void setNum_ratings(int num_ratings)
+    {
+        this.num_ratings = num_ratings;
     }
 }

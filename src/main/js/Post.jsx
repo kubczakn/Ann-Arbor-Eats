@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import Rating from '@material-ui/lab/Rating';
 import {makeStyles} from "@material-ui/core/styles";
 import {
 	Button,
@@ -37,7 +38,10 @@ const useStyles = makeStyles({
 // TODO: Card header
 const Post = ({ post, attributes, onUpdate, onDelete }) => {
     const handleDelete = () => onDelete(post.id);
-    // const handlePatch = () => onPatch(post.id, )
+    const handleRating = () => {
+    	// TODO: Implement
+		// onPatch()
+	}
     const image = "uploads/" + post.id + "/" + post.image;
     const classes = useStyles();
     return (
@@ -54,9 +58,10 @@ const Post = ({ post, attributes, onUpdate, onDelete }) => {
         		{/*	{post.name}*/}
         		{/*</Typography>*/}
 				{/*<Button>Edit</Button>*/}
-        		<Typography variant="h5" component="h2">
-        			{post.rating}
-        		</Typography>
+        		{/*<Typography variant="h5" component="h2">*/}
+        		{/*	{post.rating}*/}
+        		{/*</Typography>*/}
+				<Rating value={2} onChange={handleRating}/>
         		<Typography className={classes.pos} color="textSecondary">
         			{post.description}
         		</Typography>

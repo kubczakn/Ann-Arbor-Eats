@@ -33,7 +33,7 @@ const CreateDialog = ( {attributes, onCreate}) => {
         e.preventDefault();
         const formData = new FormData();
         formData.append('name', name);
-        formData.append('rating', rating);
+        // formData.append('rating', rating);
         formData.append('description', description);
         formData.append('image', image);
         onCreate(formData);
@@ -73,13 +73,13 @@ const CreateDialog = ( {attributes, onCreate}) => {
                                     onChange={event => setName(event.target.value)}
                                 />
                             </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="Rating"
-                                    type="text"
-                                    onChange={event => setRating(event.target.value)}
-                                />
-                            </Grid>
+                            {/*<Grid item xs={12}>*/}
+                            {/*    <TextField*/}
+                            {/*        label="Rating"*/}
+                            {/*        type="text"*/}
+                            {/*        onChange={event => setRating(event.target.value)}*/}
+                            {/*    />*/}
+                            {/*</Grid>*/}
                             <Grid item xs={12}>
                                 <TextField
                                     label="Description"
