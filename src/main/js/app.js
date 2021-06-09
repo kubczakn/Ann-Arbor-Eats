@@ -2,24 +2,14 @@
 import Header from "./Header.jsx";
 import PostList from "./PostList.jsx";
 import MapContainer from "./MapContainer.jsx";
-import { makeStyles } from "@material-ui/core/styles";
 import {
-	Typography,
 	Grid,
-	AppBar,
-	Toolbar,
-	Button,
-	Card,
-	CardContent,
-	CardMedia
 } from "@material-ui/core";
 
 const React = require('react');
 const ReactDOM = require('react-dom');
 
-
-// TODO: Modularize all of this, add logic to remove image from storage on delete
-
+// TODO: Make into a functional component
 class App extends React.Component {
 
 	constructor(props) {
@@ -94,14 +84,8 @@ class App extends React.Component {
 			.catch((error) => console.log(error));
 	}
 
-	// TODO: Have JSON body be parameter
-	onEdit(id, element, value) {
-		const url = `posts/${id}`;
-		const body = {
-			op: "replace",
-			path: `/${element}`,
-			value: value
-		}
+	onEdit(id, type, body) {
+		const url = `posts/${type}/${id}`;
 		fetch(url, {
 			headers: {
 				'Content-type': 'application/json-patch+json',

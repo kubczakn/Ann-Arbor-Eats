@@ -100,32 +100,21 @@ public class PostController {
         return post;
     }
 
-    @PatchMapping(path="/posts/{id}", consumes = "application/json-patch+json")
+    // Patch Mapping for rating
+    @PatchMapping(path="/posts/rating/{id}", consumes = "application/json-patch+json")
     public Post editPost(@PathVariable(value = "id") Long id
-        , @RequestBody Map<String, Object> body
+        , @RequestBody Map<String, Double> body
     )
-        throws ResourceNotFoundException, IOException, JsonPatchException
+        throws ResourceNotFoundException
     {
-        System.out.println(body);
         Post post = postRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("No post with this id exists"));
-        Integer rating = (Integer) body.get("value");
-        post.setRating(rating.doubleValue());
+        Double rating = body.get("value");
+        int num_ratings = post.getNum_ratings() + 1;
+        post.setRating(rating);
+        post.setNum_ratings(num_ratings);
         postRepository.save(post);
-        System.out.println(post);
         return post;
-//       return applyPatchToPost(patch, post);
-    }
-
-
-    private Post applyPatchToPost(
-        JsonPatch patch, Post targetPost
-    ) throws JsonPatchException, JsonProcessingException
-    {
-        ObjectMapper objectMapper = new ObjectMapper();
-        // Apply patch and return patched post
-        JsonNode patched = patch.apply(objectMapper.convertValue(targetPost, JsonNode.class));
-        return objectMapper.treeToValue(patched, Post.class);
     }
 
 }

@@ -3,9 +3,7 @@ package com.kubczakn.aarestaurants.reviewers;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -88,4 +86,5 @@ public class Reviewer
     public void setRoles(String[] roles) {
         this.roles = roles;
     }
+
 }
