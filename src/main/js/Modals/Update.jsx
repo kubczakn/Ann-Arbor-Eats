@@ -34,9 +34,10 @@ const UpdateDialog = ( {post, onUpdate}) => {
         const formData = new FormData();
         formData.append('name', name);
         formData.append('rating', rating);
+        formData.append('num_ratings', 5);
         formData.append('description', description);
         formData.append('image', image);
-        onUpdate(formData. post.id);
+        onUpdate(formData, post.id);
 
         // Exit from window
         setOpen(false);

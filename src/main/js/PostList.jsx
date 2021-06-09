@@ -10,15 +10,15 @@ const useStyles = makeStyles({
     },
 });
 
-const PostList = ({ posts, attributes, onUpdate, onDelete }) => {
+const PostList = ({ posts, onUpdate, onEdit, onDelete }) => {
     const classes = useStyles();
     const post_content = Object.keys(posts).map((key, index) =>
         <Grid item key={index} className={classes.root} xs={12} md={6}>
             <Post
                 post={posts[key]}
-                attributes={attributes}
                 onDelete={onDelete}
                 onUpdate={onUpdate}
+                onEdit={onEdit}
             />
         </Grid>
     );

@@ -52,7 +52,7 @@ public class PostController {
         String reviewerName = SecurityContextHolder.getContext().getAuthentication().getName();
         Reviewer reviewer = reviewerRepository.findByName(reviewerName);
         p.setName(name);
-        p.setRating(0);
+        p.setRating(0.0);
         p.setNum_ratings(0);
         p.setDescription(description);
         p.setReviewer(reviewer);
@@ -75,10 +75,12 @@ public class PostController {
         return res;
     }
 
+    // TODO: Fix
     @PutMapping(path="/posts/{id}")
     public Post updatePost(@PathVariable(value = "id") Long id
         , @RequestParam String name
-        , @RequestParam int rating
+        , @RequestParam double rating
+        , @RequestParam int num_ratings
         , @RequestParam String description
         , @RequestParam("image") MultipartFile multipartFile )
         throws ResourceNotFoundException, IOException
@@ -89,6 +91,7 @@ public class PostController {
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         post.setName(name);
         post.setRating(rating);
+        post.setNum_ratings(num_ratings);
         post.setDescription(description);
         post.setImage(fileName);
         postRepository.save(post);
@@ -99,13 +102,19 @@ public class PostController {
 
     @PatchMapping(path="/posts/{id}", consumes = "application/json-patch+json")
     public Post editPost(@PathVariable(value = "id") Long id
-       , @RequestBody JsonPatch patch
+        , @RequestBody Map<String, Object> body
     )
         throws ResourceNotFoundException, IOException, JsonPatchException
     {
+        System.out.println(body);
         Post post = postRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("No post with this id exists"));
-       return applyPatchToPost(patch, post);
+        Integer rating = (Integer) body.get("value");
+        post.setRating(rating.doubleValue());
+        postRepository.save(post);
+        System.out.println(post);
+        return post;
+//       return applyPatchToPost(patch, post);
     }
 
 

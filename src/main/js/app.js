@@ -24,10 +24,11 @@ class App extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {posts: {}, attributes: []};
+		this.state = {posts: {}};
 		this.onCreate = this.onCreate.bind(this);
 		this.onDelete = this.onDelete.bind(this);
 		this.onUpdate = this.onUpdate.bind(this);
+		this.onEdit = this.onEdit.bind(this);
 	}
 
 	loadFromServer() {
@@ -93,16 +94,17 @@ class App extends React.Component {
 			.catch((error) => console.log(error));
 	}
 
-	onPatch(id, element, value) {
-		const url = `posts/$url}`;
+	// TODO: Have JSON body be parameter
+	onEdit(id, element, value) {
+		const url = `posts/${id}`;
 		const body = {
 			op: "replace",
-			path: `/{element}`,
+			path: `/${element}`,
 			value: value
 		}
 		fetch(url, {
 			headers: {
-				'Content-type': 'application/json',
+				'Content-type': 'application/json-patch+json',
 			},
 			method: 'PATCH',
 			credentials: 'same-origin',
@@ -114,7 +116,7 @@ class App extends React.Component {
 			})
 			.then((data) => {
 				const newPosts = this.state.posts;
-				newPosts[data.id] = data;
+				newPosts[data.id].rating = data.rating;
 				this.setState({
 					posts: newPosts,
 				});
@@ -160,9 +162,9 @@ class App extends React.Component {
 					<Grid item xs={12} sm={8}>
 						<PostList
 							posts={this.state.posts}
-							attributes={this.state.attributes}
 							onDelete={this.onDelete}
 							onUpdate={this.onUpdate}
+							onEdit={this.onEdit}
 						/>
 					</Grid>
 					{/*Right Size*/}

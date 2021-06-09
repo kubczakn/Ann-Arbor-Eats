@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class Post {
     private @Id @GeneratedValue Long id; 
     private String name;
-    private int rating;
+    private double rating;
     private int num_ratings;
     private String description;
 
@@ -26,7 +26,7 @@ public class Post {
 
     Post() {}
 
-    public Post(String name, int rating, String description, String image, Reviewer reviewer) {
+    public Post(String name, String description, String image, Reviewer reviewer) {
         this.name = name;
         this.rating = 0;
         this.num_ratings = 0;
@@ -67,11 +67,11 @@ public class Post {
 
     public void setName(String name) {this.name = name;}
 
-    public int getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {this.rating = rating; }
+    public void setRating(double rating) {this.rating = rating; }
 
     public String getDescription() {
         return description;

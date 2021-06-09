@@ -36,11 +36,15 @@ const useStyles = makeStyles({
 
 // TODO: Add update / edit button, or maybe add somewhere else; patch replace operation
 // TODO: Card header
-const Post = ({ post, attributes, onUpdate, onDelete }) => {
+const Post = ({ post, onUpdate, onEdit, onDelete }) => {
+	const [rate, setRate] = useState(post.rating);
     const handleDelete = () => onDelete(post.id);
-    const handleRating = () => {
-    	// TODO: Implement
-		// onPatch()
+    const handleRating = (e, newValue) => {
+		let { id, rating, num_ratings } = post;
+		// ++num_ratings;
+		// rating = (rating + newValue) / num_ratings;
+		setRate(newValue);
+		onEdit(id, 'rating', newValue);
 	}
     const image = "uploads/" + post.id + "/" + post.image;
     const classes = useStyles();
@@ -49,7 +53,7 @@ const Post = ({ post, attributes, onUpdate, onDelete }) => {
         <Card className={classes.root}>
 			<CardHeader
 				action={
-					<UpdateDialog post={post}/>
+					<UpdateDialog onUpdate={onUpdate} post={post}/>
 				}
 				title={post.name}
 			/>
@@ -61,7 +65,7 @@ const Post = ({ post, attributes, onUpdate, onDelete }) => {
         		{/*<Typography variant="h5" component="h2">*/}
         		{/*	{post.rating}*/}
         		{/*</Typography>*/}
-				<Rating value={2} onChange={handleRating}/>
+				<Rating value={rate} onChange={handleRating}/>
         		<Typography className={classes.pos} color="textSecondary">
         			{post.description}
         		</Typography>
