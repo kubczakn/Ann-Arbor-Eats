@@ -24,6 +24,7 @@ public class DatabaseLoader implements CommandLineRunner {
     public void run(String... strings) throws Exception
     {
 //        reviewers.save(new Reviewer("nathan", "test", new String[]{"ROLE_REVIEWER"}));
+//          reviewers.save(new Reviewer("nathan1", "test1", new String[]{"ROLE_REVIEWER"}));
 
     }
 }

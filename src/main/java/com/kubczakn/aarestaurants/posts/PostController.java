@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
+import com.kubczakn.aarestaurants.ratings.Rating;
+import com.kubczakn.aarestaurants.ratings.RatingKey;
+import com.kubczakn.aarestaurants.ratings.RatingRepository;
 import com.kubczakn.aarestaurants.reviewers.Reviewer;
 import com.kubczakn.aarestaurants.reviewers.ReviewerRepository;
 import com.kubczakn.aarestaurants.utils.FileUploadUtil;
@@ -29,6 +32,9 @@ public class PostController {
 
     @Autowired
     private ReviewerRepository reviewerRepository;
+
+    @Autowired
+    private RatingRepository ratingRepository;
 
     @GetMapping("/posts/get")
     Map<Long, Post> get() {
@@ -109,9 +115,23 @@ public class PostController {
     {
         Post post = postRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("No post with this id exists"));
-        Double rating = body.get("value");
-        int num_ratings = post.getNum_ratings() + 1;
-        post.setRating(rating);
+        RatingKey key = new RatingKey(id, post.getReviewer().getName());
+        int num_ratings = post.getNum_ratings();
+        // Get rating value without being divided by number of ratins
+        double curr_val = post.getRating() * num_ratings;
+        Double new_rate = body.get("value");
+        if (!ratingRepository.existsByRatingKey(key)) {
+            // Increment number of ratings if this is the first rating a user has made on this post
+            ratingRepository.save(new Rating(key));
+            ++num_ratings;
+        }
+        Rating rating = ratingRepository.findByRatingKey(key);
+        // Find what the original user rating was and change it
+        double prev_rate = rating.getRating();
+        rating.setRating(new_rate);
+        // Set new post rating based on new user rating and number of ratings
+        curr_val = ((curr_val - prev_rate) + new_rate) / num_ratings;
+        post.setRating(curr_val);
         post.setNum_ratings(num_ratings);
         postRepository.save(post);
         return post;

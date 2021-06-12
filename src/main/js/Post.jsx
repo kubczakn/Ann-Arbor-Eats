@@ -36,17 +36,13 @@ const useStyles = makeStyles({
 
 // TODO: Add update / edit button, or maybe add somewhere else; patch replace operation
 const Post = ({ post, onUpdate, onEdit, onDelete }) => {
-	const [rate, setRate] = useState(post.rating);
     const handleDelete = () => onDelete(post.id);
     const handleRating = (e, newValue) => {
 		let { id, rating, num_ratings } = post;
-		++num_ratings;
-		rating = (rating + newValue) / num_ratings;
 		const body =
 			{
-				value: rating
+				value: newValue
 			};
-		setRate(rating);
 		onEdit(id, 'rating', body);
 	}
     const image = "uploads/" + post.id + "/" + post.image;
@@ -61,7 +57,7 @@ const Post = ({ post, onUpdate, onEdit, onDelete }) => {
 				title={post.name}
 			/>
         	<CardContent>
-				<Rating value={rate} onChange={handleRating}/>
+				<Rating value={post.rating} onChange={handleRating}/>
         		<Typography className={classes.pos} color="textSecondary">
         			{post.description}
         		</Typography>
