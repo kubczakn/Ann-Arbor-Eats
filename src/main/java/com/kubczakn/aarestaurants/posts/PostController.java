@@ -14,7 +14,9 @@ import com.kubczakn.aarestaurants.utils.FileUploadUtil;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +83,6 @@ public class PostController {
         return res;
     }
 
-    // TODO: Fix
     @PutMapping(path="/posts/{id}")
     public Post updatePost(@PathVariable(value = "id") Long id
         , @RequestParam String name
@@ -113,11 +114,13 @@ public class PostController {
     )
         throws ResourceNotFoundException
     {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
         Post post = postRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("No post with this id exists"));
-        RatingKey key = new RatingKey(id, post.getReviewer().getName());
+        RatingKey key = new RatingKey(id, currentUser);
         int num_ratings = post.getNum_ratings();
-        // Get rating value without being divided by number of ratins
+        // Get rating value without being divided by number of ratings
         double curr_val = post.getRating() * num_ratings;
         Double new_rate = body.get("value");
         if (!ratingRepository.existsByRatingKey(key)) {

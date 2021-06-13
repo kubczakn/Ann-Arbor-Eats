@@ -11,7 +11,6 @@ public interface PostRepository extends PagingAndSortingRepository<Post, Long>
     // TODO: Allow any user to submit a rating for a post
     // Only users that created a certain post can save, update, or delete a certain post
     @Override
-    @PreAuthorize("#post?.reviewer == null or #post?.reviewer?.name == authentication?.name")
     Post save(@Param("post") Post post);
 
     @Override
