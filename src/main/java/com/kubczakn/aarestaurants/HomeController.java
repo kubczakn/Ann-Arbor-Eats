@@ -13,4 +13,7 @@ public class HomeController {
     @RequestMapping(value = "/login")
     public String login() { return "login"; }
 
+    @RequestMapping(value = "/create")
+    public String create() { return "account"; }
+
 }
