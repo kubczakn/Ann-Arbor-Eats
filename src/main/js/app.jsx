@@ -128,20 +128,14 @@ class App extends React.Component {
 	}
 
 	render() {
-		// TODO: Pass location data to map for markers
-		// TODO: Fix passing of props, destructuring, callbacks
+		// TODO: Figure out best way to map marker to restaurant
 		return (
 			<Grid container direction={"column"}>
 				{/*Header*/}
 				<Header attributes={this.state.attributes} onCreate={this.onCreate}/>
-				<Grid item xs={12}>
-					<MapContainer/>
-				</Grid>
 				{/*Main content*/}
 				<Grid item container>
-					{/*Left Size*/}
-					<Grid item xs={false} sm={2}/>
-					{/*Middle*/}
+					{/*Restaurant Cards*/}
 					<Grid item xs={12} sm={8}>
 						<PostList
 							posts={this.state.posts}
@@ -150,8 +144,10 @@ class App extends React.Component {
 							onEdit={this.onEdit}
 						/>
 					</Grid>
-					{/*Right Size*/}
-					<Grid item xs={false} sm={2}/>
+					{/* Map */}
+					<Grid item xs={false} sm={4}>
+						<MapContainer/>
+					</Grid>
 				</Grid>
 			</Grid>
 		)

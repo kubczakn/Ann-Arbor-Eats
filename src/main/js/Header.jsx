@@ -9,17 +9,19 @@ const useStyles = makeStyles({
     },
     text: {
         color: '#ffffff',
+    },
+    header: {
+        background: '#1D4ED8',
     }
 });
 
-// TODO: Allow for edits on individual review attributes; probably need to add patch endpoint
 const Header = ( {attributes, onCreate}) => {
     const classes = useStyles();
 
     return (
         <Grid item className={classes.root} xs={12}>
             <AppBar position={'static'}>
-                <Toolbar>
+                <Toolbar className={classes.header} >
                     <Create attributes={attributes} onCreate={onCreate}/>
                 </Toolbar>
             </AppBar>

@@ -1,7 +1,8 @@
 import React from 'react';
 import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
+import Locations from "./Locations";
 
-
+// TODO: Jump to restaurant card on marker click
 const MapContainer = () => {
 
     const mapStyles = {
@@ -13,38 +14,18 @@ const MapContainer = () => {
         lat: 42.2808, lng: -83.7430
     }
 
-    // TODO: Store location information in JSON file
-    const locations = [
-        {
-            id: '1',
-            name: "Joe's Pizza",
-            location: {
-                lat: 42.275275685846324,
-                lng: -83.73545554111642
-            },
-        },
-        {
-            id: '2',
-            name: "Frita Batidos",
-            location: {
-                lat: 42.28079084122558,
-                lng: -83.74947390622958,
-            }
-        },
-   ]
-
     return (
         <LoadScript
             googleMapsApiKey={process.env.GOOGLE_MAPS_API_KEY}
         >
             <GoogleMap
                 mapContainerStyle={mapStyles}
-                zoom={13}
+                zoom={15}
                 center={defaultCenter}
                 options={{ styles: [{ elementType: "labels", featureType: "poi", stylers: [{ visibility: "off", }], }], }}
             >
                 {
-                    locations.map(item => {
+                    Locations.locations.map(item => {
                         return (
                             <Marker key={item.id}
                                     position={item.location}
@@ -53,6 +34,7 @@ const MapContainer = () => {
                                         color: '#ffffff',
                                         fontWeight: 'bold',
                                     }}
+                                    clickable={true}
                             />
                         )
                     })

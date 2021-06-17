@@ -34,7 +34,7 @@ const useStyles = makeStyles({
 	},
 });
 
-// TODO: Add update / edit button, or maybe add somewhere else; patch replace operation
+// TODO: Fix card sizing
 const Post = ({ post, onUpdate, onEdit, onDelete }) => {
     const handleDelete = () => onDelete(post.id);
     const handleRating = (e, newValue) => {

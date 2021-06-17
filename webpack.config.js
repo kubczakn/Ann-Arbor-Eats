@@ -1,12 +1,7 @@
 var Dotenv = require('dotenv-webpack');
-const path = require('path');
-const webpack = require('webpack');
-const dotenv = require('dotenv').config( {
-    path: path.join(__dirname, '.env')
-} );
 
 module.exports = {
-    entry: './src/main/js/app.js',
+    entry: './src/main/js/app.jsx',
     devtool: 'sourcemaps',
     cache: true,
     mode: 'development',
@@ -22,6 +17,7 @@ module.exports = {
             {
                 // test: path.join(__dirname, '.'),
                 // exclude: /(node_modules)/,
+                test: /\.jsx$/,
                 use: [{
                     loader: 'babel-loader',
                     options: {
@@ -29,12 +25,9 @@ module.exports = {
                     }
                 }]
             }
-        ]
+        ],
     },
     plugins: [
          new Dotenv()
-        // new webpack.DefinePlugin( {
-        //     "process.env": dotenv.parsed
-        // } ),
     ]
 };
