@@ -34,7 +34,7 @@ const useStyles = makeStyles({
 	},
 });
 
-// TODO: Fix card sizing
+// TODO: More appealing card styling
 const Post = ({ post, onUpdate, onEdit, onDelete }) => {
     const handleDelete = () => onDelete(post.id);
     const handleRating = (e, newValue) => {
@@ -51,9 +51,9 @@ const Post = ({ post, onUpdate, onEdit, onDelete }) => {
         // Material-UI card component for review / post
         <Card className={classes.root}>
 			<CardHeader
-				action={
-					<UpdateDialog onUpdate={onUpdate} post={post}/>
-				}
+				// action={
+				// 	<UpdateDialog onUpdate={onUpdate} post={post}/>
+				// }
 				title={post.name}
 			/>
         	<CardContent>
@@ -65,9 +65,9 @@ const Post = ({ post, onUpdate, onEdit, onDelete }) => {
         			className={classes.media}
 					image={image}
         			/>
-				<CardActions>
-					<Button onClick={handleDelete}>Delete</Button>
-				</CardActions>
+				{/*<CardActions>*/}
+				{/*	<Button onClick={handleDelete}>Delete</Button>*/}
+				{/*</CardActions>*/}
         	</CardContent>
         </Card>
     )

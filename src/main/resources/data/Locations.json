@@ -1,0 +1,84 @@
+{
+  "locations": [
+    {
+      "id": 1,
+      "name": "Sava's",
+      "description": "American, Breakfast & Brunch",
+      "image": "sava.jpg",
+      "lat": 42.27985695741548,
+      "lng": -83.74116609607758
+    },
+    {
+      "id": 2,
+      "name": "Frita Batidos",
+      "description": "Cuban, Burgers",
+      "image": "frita.jpg",
+      "lat": 42.28079084122558,
+      "lng": -83.74947390622958
+    },
+    {
+      "id": 3,
+      "name": "Joe's Pizza",
+      "description": "Pizza, Italian",
+      "image": "joe.jpg",
+      "lat": 42.275275685846324,
+      "lng": -83.73545554111642
+    },
+    {
+      "id": 4,
+      "name": "The Jagged Fork",
+      "description": "Sandwiches, Breakfast & Brunch",
+      "image": "jagged.jpg",
+      "lat": 42.27744767031562,
+      "lng": -83.74892878447943
+    },
+    {
+      "id": 5,
+      "name": "Chapala",
+      "description": "Mexican, Bars",
+      "image": "chapala.jpg",
+      "lat": 42.28296246748778,
+      "lng": -83.74865194400485
+    },
+    {
+      "id": 6,
+      "name": "Zingerman's",
+      "description": "Delis, Sandwiches",
+      "image": "zingermans.jpg",
+      "lat": 42.28471392842702,
+      "lng": -83.74506057284091
+    },
+    {
+      "id": 7,
+      "name": "Jolly Pumpkin",
+      "description": "Pubs, American",
+      "image": "jolly.jpg",
+      "lat": 42.2791663171986,
+      "lng": -83.74846180167725
+    },
+    {
+      "id": 8,
+      "name": "Tomukun",
+      "description": "Korean, Barbeque, Bars",
+      "image": "tomukun.jpg",
+      "lat": 42.27954694123521,
+      "lng": -83.74271985934962
+    },
+    {
+      "id": 9,
+      "name": "Palio",
+      "description": "Italian",
+      "image": "palio.jpg",
+      "lat": 42.278323545999456,
+      "lng": -83.74850245934967
+    },
+    {
+      "id": 10,
+      "name": "Of Rice & Men",
+      "description": "Asian Fusion, Japanese",
+      "image": "rice.jpg",
+      "lat": 42.27901799052154,
+      "lng": -83.7488192627282
+    }
+  ]
+}

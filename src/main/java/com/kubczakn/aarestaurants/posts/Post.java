@@ -10,48 +10,29 @@ import javax.persistence.*;
 @Entity
 @Table(name = "posts")
 public class Post {
-    private @Id @GeneratedValue Long id; 
+    private @Id Long id;
     private String name;
     private double rating;
     private int num_ratings;
     private String description;
 
+    private double lat;
+    private double lng;
+
     private String image;
-
-    // Used to support versioning of resources
-    private @Version @JsonIgnore Long version;
-
-    // Each post is associated with a user
-    private @ManyToOne Reviewer reviewer;
 
     Post() {}
 
-    public Post(String name, String description, String image, Reviewer reviewer) {
+    public Post(Long id, String name, String description, String image, double lat, double lng) {
+        this.id = id;
         this.name = name;
         this.rating = 0;
         this.num_ratings = 0;
         this.description = description;
         this.image = image;
-        this.reviewer = reviewer;
+        this.lat = lat;
+        this.lng = lng;
     }
-
-    @Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Post post = (Post) o;
-		return Objects.equals(id, post.id) &&
-			Objects.equals(name, post.name) &&
-			Objects.equals(rating, post.rating) &&
-			Objects.equals(description, post.description) &&
-            Objects.equals(version, post.version);
-	}
-
-//    @Transient
-//    public String getImagePath() {
-//        if (image == null || id == null) return null;
-//        return "/uploads/" + id + "/" + image;
-//    }
 
     public Long getId() {
         return id;
@@ -79,14 +60,6 @@ public class Post {
 
     public void setDescription(String description) {this.description = description; }
 
-    public Long getVersion() { return version; }
-
-    public void setVersion(Long version) { this.version = version; }
-
-    public Reviewer getReviewer() { return reviewer; }
-
-    public void setReviewer(Reviewer user) { this.reviewer = user; }
-
     public String getImage()
     {
         return image;
@@ -105,5 +78,25 @@ public class Post {
     public void setNum_ratings(int num_ratings)
     {
         this.num_ratings = num_ratings;
+    }
+
+    public double getLat()
+    {
+        return lat;
+    }
+
+    public void setLat(double lat)
+    {
+        this.lat = lat;
+    }
+
+    public double getLng()
+    {
+        return lng;
+    }
+
+    public void setLng(double lng)
+    {
+        this.lng = lng;
     }
 }

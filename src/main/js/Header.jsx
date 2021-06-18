@@ -22,7 +22,8 @@ const Header = ( {attributes, onCreate}) => {
         <Grid item className={classes.root} xs={12}>
             <AppBar position={'static'}>
                 <Toolbar className={classes.header} >
-                    <Create attributes={attributes} onCreate={onCreate}/>
+                    <Typography className={classes.text}>Ann Arbor Eats</Typography>
+                    {/*<Create attributes={attributes} onCreate={onCreate}/>*/}
                 </Toolbar>
             </AppBar>
         </Grid>

@@ -16,8 +16,8 @@ const PostList = ({ posts, onUpdate, onEdit, onDelete }) => {
         <Grid item key={index} className={classes.root} xs={12} md={6}>
             <Post
                 post={posts[key]}
-                onDelete={onDelete}
-                onUpdate={onUpdate}
+                // onDelete={onDelete}
+                // onUpdate={onUpdate}
                 onEdit={onEdit}
             />
         </Grid>

@@ -1,9 +1,8 @@
 import React from 'react';
-import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
-import Locations from "./Locations";
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
 // TODO: Jump to restaurant card on marker click
-const MapContainer = () => {
+const MapContainer = ( { posts } ) => {
 
     const mapStyles = {
         height: "100vh",
@@ -25,12 +24,15 @@ const MapContainer = () => {
                 options={{ styles: [{ elementType: "labels", featureType: "poi", stylers: [{ visibility: "off", }], }], }}
             >
                 {
-                    Locations.locations.map(item => {
+                    Object.keys(posts).map((key, index) => {
                         return (
-                            <Marker key={item.id}
-                                    position={item.location}
+                            <Marker key={index}
+                                    position={{
+                                        lat: posts[key].lat,
+                                        lng: posts[key].lng
+                                    }}
                                     label= {{
-                                        text: item.id,
+                                        text: String(posts[key].id),
                                         color: '#ffffff',
                                         fontWeight: 'bold',
                                     }}
