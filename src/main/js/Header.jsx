@@ -12,6 +12,7 @@ const useStyles = makeStyles({
     },
     header: {
         background: '#1D4ED8',
+        minHeight: 50
     }
 });
 

@@ -1,5 +1,6 @@
 'use strict';
 import Header from "./Header.jsx";
+import Footer from "./Footer.jsx";
 import PostList from "./PostList.jsx";
 import MapContainer from "./MapContainer.jsx";
 import {
@@ -62,12 +63,9 @@ const App = ( { url }) => {
 
 	return (
 		<Grid container direction={"column"}>
-			{/*Header*/}
-			{/*<Header attributes={attributes} onCreate={this.onCreate}/>*/}
 			<Header attributes={attributes}/>
 			<Grid item container direction={"row"}>
 				<Grid item container sm={8}>
-					{/*Restaurant Cards*/}
 					<Grid item>
 						<PostList
 							posts={posts}
@@ -79,12 +77,9 @@ const App = ( { url }) => {
 					<MapContainer posts={posts}/>
 				</Grid>
 			</Grid>
-			{/*Map*/}
-			{/*Main content*/}
-
+			<Footer />
 		</Grid>
 	)
-
 }
 
 ReactDOM.render(
