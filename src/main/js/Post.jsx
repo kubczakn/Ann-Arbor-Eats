@@ -7,7 +7,7 @@ import {
 	CardActions,
 	CardContent,
 	CardHeader,
-	CardMedia, IconButton,
+	CardMedia, Grid, IconButton,
 	Typography
 } from "@material-ui/core";
 import EditIcon from '@material-ui/icons/Edit';
@@ -32,10 +32,14 @@ const useStyles = makeStyles({
 		height: 0,
 		paddingTop: '56.25%', // 16:9
 	},
+	left: {
+		paddingLeft: 5
+	}
 });
 
 // TODO: More appealing card styling
 const Post = ({ post, onUpdate, onEdit, onDelete }) => {
+	const [num_ratings, set_num] = useState(post.num_ratings);
     const handleDelete = () => onDelete(post.id);
     const handleRating = (e, newValue) => {
 		let { id, rating, num_ratings } = post;
@@ -44,9 +48,11 @@ const Post = ({ post, onUpdate, onEdit, onDelete }) => {
 				value: newValue
 			};
 		onEdit(id, 'rating', body);
+		set_num(num_ratings + 1);
 	}
     const image = "uploads/" + post.id + "/" + post.image;
     const classes = useStyles();
+    const rating_num = `(${num_ratings})`;
     return (
         // Material-UI card component for review / post
         <Card className={classes.root}>
@@ -56,8 +62,17 @@ const Post = ({ post, onUpdate, onEdit, onDelete }) => {
 				// }
 				title={post.name}
 			/>
-        	<CardContent>
-				<Rating value={post.rating} onChange={handleRating}/>
+        	<CardContent display="inline">
+				<Grid container>
+					<Grid item>
+						<Rating value={post.rating} onChange={handleRating} />
+					</Grid>
+					<Grid item>
+						<Typography color="textSecondary" className={classes.left}>
+							{rating_num}
+						</Typography>
+					</Grid>
+				</Grid>
         		<Typography className={classes.pos} color="textSecondary">
         			{post.description}
         		</Typography>
