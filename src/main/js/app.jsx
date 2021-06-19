@@ -6,15 +6,17 @@ import {
 	Grid,
 } from "@material-ui/core";
 import {useEffect, useState} from "react";
-
+import {makeStyles} from "@material-ui/core/styles";
+import { StickyContainer, Sticky } from 'react-sticky';
 const React = require('react');
 const ReactDOM = require('react-dom');
+
+
 
 
 const App = ( { url }) => {
 	const [posts, setPosts] = useState({});
 	const [attributes, setAttributes] = useState(["name", "rating", "description"])
-
 	const loadFromServer = () => {
 		const url = "/posts/get";
 		fetch(url, {
@@ -63,8 +65,11 @@ const App = ( { url }) => {
 			{/*Header*/}
 			{/*<Header attributes={attributes} onCreate={this.onCreate}/>*/}
 			<Header attributes={attributes}/>
+			{/*Map*/}
+			<MapContainer posts={posts}/>
 			{/*Main content*/}
 			<Grid item container>
+				<Grid item sm={2}/>
 				{/*Restaurant Cards*/}
 				<Grid item xs={12} sm={8}>
 					<PostList
@@ -72,12 +77,7 @@ const App = ( { url }) => {
 						onEdit={onEdit}
 					/>
 				</Grid>
-				{/* Map */}
-				<Grid item xs={false} sm={4}>
-					<MapContainer
-						posts={posts}
-					/>
-				</Grid>
+				<Grid item sm={2}/>
 			</Grid>
 		</Grid>
 	)

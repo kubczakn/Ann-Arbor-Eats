@@ -20,12 +20,15 @@ const Header = ( {attributes, onCreate}) => {
 
     return (
         <Grid item className={classes.root} xs={12}>
-            <AppBar position={'static'}>
-                <Toolbar className={classes.header} >
-                    <Typography className={classes.text}>Ann Arbor Eats</Typography>
-                    {/*<Create attributes={attributes} onCreate={onCreate}/>*/}
-                </Toolbar>
-            </AppBar>
+            <div style={{position: "sticky", top: 0}}>
+                <AppBar position={"static"}>
+                    <Toolbar className={classes.header} >
+                        <Typography className={classes.text}>Ann Arbor Eats</Typography>
+                        {/*<Create attributes={attributes} onCreate={onCreate}/>*/}
+                    </Toolbar>
+                </AppBar>
+            </div>
+
         </Grid>
     );
 }
