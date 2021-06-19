@@ -65,20 +65,23 @@ const App = ( { url }) => {
 			{/*Header*/}
 			{/*<Header attributes={attributes} onCreate={this.onCreate}/>*/}
 			<Header attributes={attributes}/>
-			{/*Map*/}
-			<MapContainer posts={posts}/>
-			{/*Main content*/}
-			<Grid item container>
-				<Grid item sm={2}/>
-				{/*Restaurant Cards*/}
-				<Grid item xs={12} sm={8}>
-					<PostList
-						posts={posts}
-						onEdit={onEdit}
-					/>
+			<Grid item container direction={"row"}>
+				<Grid item container sm={8}>
+					{/*Restaurant Cards*/}
+					<Grid item>
+						<PostList
+							posts={posts}
+							onEdit={onEdit}
+						/>
+					</Grid>
 				</Grid>
-				<Grid item sm={2}/>
+				<Grid item xs={false} sm={4}>
+					<MapContainer posts={posts}/>
+				</Grid>
 			</Grid>
+			{/*Map*/}
+			{/*Main content*/}
+
 		</Grid>
 	)
 

@@ -19,17 +19,17 @@ const Header = ( {attributes, onCreate}) => {
     const classes = useStyles();
 
     return (
-        <Grid item className={classes.root} xs={12}>
-            <div style={{position: "sticky", top: 0}}>
-                <AppBar position={"static"}>
-                    <Toolbar className={classes.header} >
-                        <Typography className={classes.text}>Ann Arbor Eats</Typography>
-                        {/*<Create attributes={attributes} onCreate={onCreate}/>*/}
-                    </Toolbar>
-                </AppBar>
-            </div>
+        <div style={{position: "sticky", top: 0, zIndex: 3}}>
+            <Grid item className={classes.root} xs={12}>
+                    <AppBar position={"static"}>
+                        <Toolbar className={classes.header} >
+                            <Typography className={classes.text}>Ann Arbor Eats</Typography>
+                            {/*<Create attributes={attributes} onCreate={onCreate}/>*/}
+                        </Toolbar>
+                    </AppBar>
+            </Grid>
+        </div>
 
-        </Grid>
     );
 }
 

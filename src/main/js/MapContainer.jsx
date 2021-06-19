@@ -6,7 +6,7 @@ import { Link } from 'react-scroll';
 const MapContainer = ( { posts } ) => {
 
     const mapStyles = {
-        height: "40vh",
+        height: "100vh",
         width: "100%",
         position: "sticky",
         right: 0
@@ -17,13 +17,13 @@ const MapContainer = ( { posts } ) => {
     }
 
     return (
-        <div style={{position: "sticky", top: 0, zIndex: 3 }}>
+        <div style={{position: "sticky", top: 60, Index: 3 }}>
             <LoadScript
                 googleMapsApiKey={process.env.GOOGLE_MAPS_API_KEY}
             >
                 <GoogleMap
                     mapContainerStyle={mapStyles}
-                    zoom={14}
+                    zoom={15}
                     center={defaultCenter}
                     options={{ styles: [{ elementType: "labels", featureType: "poi", stylers: [{ visibility: "off", }], }], }}
                 >
