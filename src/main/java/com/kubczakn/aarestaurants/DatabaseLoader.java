@@ -53,7 +53,7 @@ public class DatabaseLoader implements CommandLineRunner {
     @Override
     public void run(String... strings) throws Exception
     {
-//        File dbConfig = ResourceUtils.getFile("classpath:data/Locations.json");
-//        loadRestaurants(dbConfig);
+        File dbConfig = ResourceUtils.getFile("classpath:data/Locations.json");
+        loadRestaurants(dbConfig);
     }
 }

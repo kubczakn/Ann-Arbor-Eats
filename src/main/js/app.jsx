@@ -19,6 +19,7 @@ const App = ( { url }) => {
 	const [posts, setPosts] = useState({});
 	const [attributes, setAttributes] = useState(["name", "rating", "description"])
 	const loadFromServer = () => {
+		// TODO: Load only first ten restaurants
 		const url = "/posts/get";
 		fetch(url, {
 			headers: {
@@ -35,6 +36,11 @@ const App = ( { url }) => {
 				setPosts(data);
 			})
 			.catch((err) => console.log(err));
+	}
+
+	const loadPage = () => {
+		const url  ="/posts/get";
+		// TODO: Load  <= 10 restaurants depending on page
 	}
 
 	function onEdit(id, type, body ) {

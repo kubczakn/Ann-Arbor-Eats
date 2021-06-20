@@ -79,6 +79,22 @@
       "image": "rice.jpg",
       "lat": 42.27901799052154,
       "lng": -83.7488192627282
+    },
+    {
+      "id": 11,
+      "name": "Aventura",
+      "description": "Tapas, Spanish",
+      "image": "aventura.jpg",
+      "lat": 42.280287717060794,
+      "lng": -83.74649510204164
+    },
+    {
+      "id": 12,
+      "name": "Spencer",
+      "description": "American, Wine Bar",
+      "image": "spencer.jpg",
+      "lat": 42.27967856194344,
+      "lng": -83.747897624156152
     }
   ]
 }

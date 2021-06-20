@@ -7,7 +7,7 @@ const useStyles = makeStyles({
     footer: {
         background: '#1D4ED8',
         // background: '#bdbdbd',
-        minHeight: 45
+        minHeight: 45,
     },
     text: {
         color: '#ffffff',
