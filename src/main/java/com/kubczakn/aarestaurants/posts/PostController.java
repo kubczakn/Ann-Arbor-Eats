@@ -11,6 +11,9 @@ import com.kubczakn.aarestaurants.ratings.RatingRepository;
 import com.kubczakn.aarestaurants.reviewers.Reviewer;
 import com.kubczakn.aarestaurants.reviewers.ReviewerRepository;
 import com.kubczakn.aarestaurants.utils.FileUploadUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -39,9 +43,11 @@ public class PostController {
     private RatingRepository ratingRepository;
 
     @GetMapping("/posts/get")
-    Map<Long, Post> get() {
+    Map<Long, Post> get(@RequestParam("page_num") int page_num) {
         Map<Long, Post> res = new HashMap<>();
-        Iterable<Post> posts = postRepository.findAll();
+        Pageable page = PageRequest.of(page_num, 10);
+        Page<Post> postss = postRepository.findAll(page);
+        List<Post> posts = postss.getContent();
         for (Post p: posts) {
            Long id = p.getId();
            res.put(id, p);

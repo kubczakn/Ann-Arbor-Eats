@@ -20,7 +20,8 @@ const App = ( { url }) => {
 	const [attributes, setAttributes] = useState(["name", "rating", "description"])
 	const loadFromServer = () => {
 		// TODO: Load only first ten restaurants
-		const url = "/posts/get";
+		// const url = "/posts/get";
+		const url = "/posts/get/?page_num=0";
 		fetch(url, {
 			headers: {
 				'Content-Type': 'application/json',
@@ -40,6 +41,7 @@ const App = ( { url }) => {
 
 	const loadPage = () => {
 		const url  ="/posts/get";
+		// const url = "/posts/get/?page=10";
 		// TODO: Load  <= 10 restaurants depending on page
 	}
 
