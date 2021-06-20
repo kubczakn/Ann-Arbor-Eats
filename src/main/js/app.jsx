@@ -18,10 +18,27 @@ const ReactDOM = require('react-dom');
 const App = ( { url }) => {
 	const [posts, setPosts] = useState({});
 	const [attributes, setAttributes] = useState(["name", "rating", "description"])
-	const loadFromServer = () => {
-		// TODO: Load only first ten restaurants
-		// const url = "/posts/get";
-		const url = "/posts/get/?page_num=0";
+	// const loadFromServer = () => {
+	// 	const url = "/posts/get/?page_num=0";
+	// 	fetch(url, {
+	// 		headers: {
+	// 			'Content-Type': 'application/json',
+	// 			'Accept': 'application/json'
+	// 		},
+	// 		credentials: 'same-origin'
+	// 	})
+	// 		.then((response) => {
+	// 			if(!response.ok) throw Error(response.statusText);
+	// 			return response.json();
+	// 		})
+	// 		.then((data) => {
+	// 			setPosts(data);
+	// 		})
+	// 		.catch((err) => console.log(err));
+	// }
+
+	const loadPage = (pageNum) => {
+		const url = `/posts/get/?page_num=${pageNum}`;
 		fetch(url, {
 			headers: {
 				'Content-Type': 'application/json',
@@ -37,12 +54,6 @@ const App = ( { url }) => {
 				setPosts(data);
 			})
 			.catch((err) => console.log(err));
-	}
-
-	const loadPage = () => {
-		const url  ="/posts/get";
-		// const url = "/posts/get/?page=10";
-		// TODO: Load  <= 10 restaurants depending on page
 	}
 
 	function onEdit(id, type, body ) {
@@ -67,7 +78,7 @@ const App = ( { url }) => {
 			.catch((error) => console.log(error));
 	}
 
-	useEffect( () => loadFromServer(), [])
+	useEffect( () => loadPage(0), [])
 
 	return (
 		<Grid container direction={"column"}>
@@ -77,6 +88,7 @@ const App = ( { url }) => {
 					<Grid item>
 						<PostList
 							posts={posts}
+							loadPage={loadPage}
 							onEdit={onEdit}
 						/>
 					</Grid>

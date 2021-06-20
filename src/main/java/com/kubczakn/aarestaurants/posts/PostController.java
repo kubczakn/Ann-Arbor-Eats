@@ -46,8 +46,8 @@ public class PostController {
     Map<Long, Post> get(@RequestParam("page_num") int page_num) {
         Map<Long, Post> res = new HashMap<>();
         Pageable page = PageRequest.of(page_num, 10);
-        Page<Post> postss = postRepository.findAll(page);
-        List<Post> posts = postss.getContent();
+        Page<Post> page_obj = postRepository.findAll(page);
+        List<Post> posts = page_obj.getContent();
         for (Post p: posts) {
            Long id = p.getId();
            res.put(id, p);
