@@ -53,6 +53,7 @@ const Post = ({ post, onUpdate, onEdit, onDelete }) => {
     const image = "uploads/" + post.id + "/" + post.image;
     const classes = useStyles();
     const rating_num = `(${num_ratings})`;
+    const title = `${post.id}.` + " " + post.name;
     return (
         // Material-UI card component for review / post
         <Card className={classes.root}>
@@ -60,7 +61,7 @@ const Post = ({ post, onUpdate, onEdit, onDelete }) => {
 				// action={
 				// 	<UpdateDialog onUpdate={onUpdate} post={post}/>
 				// }
-				title={post.name}
+				title={title}
 			/>
         	<CardContent display="inline">
 				<Grid container>
