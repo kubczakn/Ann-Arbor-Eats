@@ -14,26 +14,17 @@ const useStyles = makeStyles({
     }
 });
 
-const PostList = ({ posts, onUpdate, loadPage, onEdit, onDelete }) => {
+
+const PostList = ({loadPage, post_content}) => {
     const classes = useStyles();
     const handlePage = (e, value) => {
         loadPage(value - 1);
     }
-    const post_content = Object.keys(posts).map((key, index) =>
-        <Grid item key={index} className={classes.root} xs={12} md={6}>
-            <Post
-                post={posts[key]}
-                // onDelete={onDelete}
-                // onUpdate={onUpdate}
-                onEdit={onEdit}
-            />
-        </Grid>
-    );
 
     return (
         <Grid container spacing={2}>
             {post_content}
-            <Pagination className={classes.pagination} count={10} onChange={handlePage} />
+            <Pagination className={classes.pagination} count={2} onChange={handlePage} />
         </Grid>
     )
 }

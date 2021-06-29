@@ -6,36 +6,24 @@ import MapContainer from "./MapContainer.jsx";
 import {
 	Grid,
 } from "@material-ui/core";
-import {useEffect, useState} from "react";
+import {useEffect, useState, useRef} from "react";
+import Post from "./Post.jsx";
 import {makeStyles} from "@material-ui/core/styles";
-import { StickyContainer, Sticky } from 'react-sticky';
 const React = require('react');
 const ReactDOM = require('react-dom');
 
 
-
+const useStyles = makeStyles({
+	root: {
+		paddingTop: 5,
+	},
+});
 
 const App = ( { url }) => {
 	const [posts, setPosts] = useState({});
 	const [attributes, setAttributes] = useState(["name", "rating", "description"])
-	// const loadFromServer = () => {
-	// 	const url = "/posts/get/?page_num=0";
-	// 	fetch(url, {
-	// 		headers: {
-	// 			'Content-Type': 'application/json',
-	// 			'Accept': 'application/json'
-	// 		},
-	// 		credentials: 'same-origin'
-	// 	})
-	// 		.then((response) => {
-	// 			if(!response.ok) throw Error(response.statusText);
-	// 			return response.json();
-	// 		})
-	// 		.then((data) => {
-	// 			setPosts(data);
-	// 		})
-	// 		.catch((err) => console.log(err));
-	// }
+
+	const classes = useStyles();
 
 	const loadPage = (pageNum) => {
 		const url = `/posts/get/?page_num=${pageNum}`;
@@ -78,7 +66,27 @@ const App = ( { url }) => {
 			.catch((error) => console.log(error));
 	}
 
-	useEffect( () => loadPage(0), [])
+	useEffect( () => loadPage(0), []);
+
+	const refs = useRef([])
+
+	const post_content = Object.keys(posts).map((key, index) =>
+		<Grid ref={ref => refs.current[key] = ref}  item key={index} className={classes.root} xs={12} md={6}>
+			<Post
+				post={posts[key]}
+				// onDelete={onDelete}
+				// onUpdate={onUpdate}
+				onEdit={onEdit}
+			/>
+		</Grid>
+	);
+
+	const handleMarkerClick = (id) => () => {
+		refs.current[id].scrollIntoView({
+			behavior: 'smooth',
+			block: 'center'
+		});
+	}
 
 	return (
 		<Grid container direction={"column"}>
@@ -88,13 +96,17 @@ const App = ( { url }) => {
 					<Grid item>
 						<PostList
 							posts={posts}
+							post_content = {post_content}
 							loadPage={loadPage}
 							onEdit={onEdit}
 						/>
 					</Grid>
 				</Grid>
 				<Grid item xs={false} sm={4}>
-					<MapContainer posts={posts}/>
+					<MapContainer
+						posts={posts}
+						handleMarkerClick={handleMarkerClick}
+					/>
 				</Grid>
 			</Grid>
 			<Footer />

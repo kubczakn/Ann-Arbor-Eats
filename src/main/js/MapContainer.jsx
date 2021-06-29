@@ -1,9 +1,7 @@
-import React from 'react';
+import React from "react"
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
-import { Link } from 'react-scroll';
 
-// TODO: Jump to restaurant card on marker click
-const MapContainer = ( { posts } ) => {
+const MapContainer = ({ posts, handleMarkerClick } ) => {
 
     const mapStyles = {
         height: "100vh",
@@ -15,6 +13,8 @@ const MapContainer = ( { posts } ) => {
     const defaultCenter = {
         lat: 42.2808, lng: -83.7430
     }
+
+
 
     return (
         <div style={{position: "sticky", top: 60, Index: 3 }}>
@@ -41,6 +41,7 @@ const MapContainer = ( { posts } ) => {
                                             fontWeight: 'bold',
                                         }}
                                         clickable={true}
+                                        onClick={handleMarkerClick(posts[key].id)}
                                 />
 
                             )
